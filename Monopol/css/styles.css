@@ -1,0 +1,64 @@
+* {
+	font-size: 10pt;
+	font-family: Verdana, Arial;
+}
+
+body { 
+	background: #ccc; 
+	padding: 5px;
+}
+div.plansza { 
+	display: table;
+	width: 1300px; 
+	border: 2px solid black; 
+	border-bottom: 0px;
+}
+div.row { 
+	display: table-row; 
+}
+div.cell { 
+	display: block;  
+	width: 128px; 
+	height: 160px; 
+	border: 1px solid black;
+	border-bottom: 3px solid black;
+	background: white;
+	float: left;
+}
+
+div.cellBuildings {
+	dispaly: table-row;
+	height: 30px;
+	border-bottom: 2px solid black;
+	text-align: center;
+}
+
+div.cellPrice {
+	dispaly: table-row;
+	text-align: center;
+	font-weight: bold;
+	padding: 3px 0px;
+}
+
+div.cellFigures {
+	dispaly: table-row;
+	text-align: center;
+	height: 80px;
+}
+
+div.cellName {
+	dispaly: table-row;
+	padding: 3px 0px;
+	text-align: center;
+	font-weight: bold;
+	font-style: italic;
+}
+
+div.pionek {
+	width: 15px;
+	height: 30px;
+	background: red;
+	margin: 5px;
+	display: block;
+	float: left;
+}
