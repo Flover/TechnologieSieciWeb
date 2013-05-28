@@ -87,6 +87,12 @@ $(function(){
 			dzielnice[9].lista.push(12);
 			dzielnice[9].lista.push(28);
 
+			gracze[0].ulice.push(1);
+			gracze[0].ulice.push(3);
+			pola[1].wlasciciel = 0;
+			pola[3].wlasciciel = 0;
+
+
 		var pionek = function (id) { return '<div class="pionek" id="pionek'+id+'"></div>'; };
 
 		$('#cell_0101 .cellFigures').append(pionek(0));
@@ -96,7 +102,7 @@ $(function(){
 
 		var movePionek = function (moveSize, graczId){
 			var gracz = gracze[graczId];
-			var cell = $('#pionek'+graczId).parent().parent().attr('id').substring(6,9);
+			var cell = $('#pionek'+graczId).parent().parent().attr('id').substring(5,9);
 			console.log('cell: ' + cell);
 			var pionekPozycja = 0;
 			for(var i = 0; i < 41; i++){
@@ -124,7 +130,10 @@ $(function(){
 					if(dzielnica.lista[i] && pola[dzielnica.lista[i]].wlasciciel !== graczId){
 						ownsAll = false;
 					}
-						console.log(pola[dzielnica.lista[i]].domki + " : " + pola[dzielnica.lista[i]].hotel);
+					gracze[graczId].ulice.push(1);
+					gracze[graczId].ulice.push(3);
+
+						console.log(pola[dzielnica.lista[i]].wlasciciel + " : " +pola[dzielnica.lista[i]].domki + " : " + pola[dzielnica.lista[i]].hotel);
 					liczbaDomki += pola[dzielnica.lista[i]].domki;
 					liczbaHotele += pola[dzielnica.lista[i]].hotel;
 					iloscPol++;
@@ -132,22 +141,26 @@ $(function(){
 					console.log('iloscPol: ' + iloscPol + ' ownsAll: ' + ownsAll + ' domki: ' + liczbaDomki + ' hotele: ' + liczbaHotele);
 
 			if(pole.wlasciciel === undefined){
-				$('#buyModalLabel').text('Kup: ' + pole.nazwa);
+				$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
 				$('#buyModalKasa').text('Stan konta: ' + gracz.kasa);
 				$('#buyModalCena').text('Cena: ' + pole.wartosc);
 				$('#buyModal').modal('show');
 			}
 			else if(pole.wlasciciel === graczId && ownsAll){
 				//todo modal do budowania
+				$('#propertyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
+				$('#propertyModalKasa').text('Stan konta: ' + gracz.kasa);
+				$('#propertyModalCena').text('Cena: ' + pole.domekCena);
+				$('#propertyModal').modal('show');
 			}
 			else if(pole.wlasciciel !== graczId){
 					var naleznosc = pole.wartosc;
 					if(ownsAll){ naleznosc *= iloscPol; }
-				gracz.kasa -= naleznosc;
-				gracze[pole.wlasciciel].kasa += naleznosc;
-					console.log(gracz.nick + ' kasa: ' + gracz.kasa);
-					console.log(gracze[pole.wlasciciel].nick + ' kasa: ' + gracze[pole.wlasciciel].kasa);
-				$('#payModalLabel').text( 'Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+				//gracz.kasa -= naleznosc;
+				//gracze[pole.wlasciciel].kasa += naleznosc;
+				//	console.log(gracz.nick + ' kasa: ' + gracz.kasa);
+				//	console.log(gracze[pole.wlasciciel].nick + ' kasa: ' + gracze[pole.wlasciciel].kasa);
+				$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
 				$('#payModalKasa').text('Stan konta:' + gracz.kasa);
 				$('#payModalCena').text('Należność: ' + naleznosc);
 				$('#payModal').modal('show');
@@ -167,21 +180,54 @@ $(function(){
 					movePionek(3, graczId);
 				}
 				,1000);
-
+				console.log(gracz.nick + ' kasa po kupnie: ' + gracz.kasa);
 			});
 
-			$('#payModalSaveBtn').click(function(){
-			
-			});
+		$('#payModalSaveBtn').click(function(){
+			var gracz = gracze[graczId];
+			var naleznosc = pola[poleId].wartosc;
+			gracz.kasa -= naleznosc;
+			gracze[pola[poleId].wlasciciel].kasa += naleznosc;
+			$('#payModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+			console.log(gracz.nick + ' kasa po zaplacie: ' + gracz.kasa);
+			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po zaplacie: ' + gracze[pola[poleId].wlasciciel].kasa);
+		});
 
-			$('#buyModalCancelBtn').click(function(){
-				$('#buyModal').modal('hide');
-				setTimeout(function(){
-					graczId++;
-					movePionek(3, graczId);
-				}
-				,1000);
-			});
+		$('#propertyModalSaveBtn').click(function(){
+			var gracz = gracze[graczId];
+			var naleznosc = pola[poleId].domekCena;
+			gracze[pola[poleId].wlasciciel].kasa -= naleznosc;
+			$('#propertyModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po kupnie domku: ' + gracze[pola[poleId].wlasciciel].kasa);
+		});
+
+		$('#propertyModalCancelBtn').click(function(){
+			$('#propertyModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+		});
+
+		$('#buyModalCancelBtn').click(function(){
+			$('#buyModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+		});
 
 		//losowanie ilości oczek jaką ma się przesunąć pionek
 		var kostka = function getRandomInt () {
