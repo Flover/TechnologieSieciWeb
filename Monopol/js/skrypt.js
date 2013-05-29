@@ -7,6 +7,30 @@ $(function(){
 		return this;
 	};
 
+	var KartaSzansy = function (numer, tresc, kwota) {
+		this.numer = numer;
+		this.tresc = tresc;
+		this.kwota = kwota;
+		return this;
+	}
+
+	var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 200), new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 200),
+	new KartaSzansy(2, 'Zrobiłeś błąd w kalkulacjach podatkowych. Zapłać każdemu graczowi 50', (-50*ilosc_graczy), new KartaSzansy(3, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0),
+	new KartaSzansy(4, 'Idź do Elektrowni.Jeśli nie jest zajęta możesz ją kupić od banku. Jeśli jest już zajęta rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), new KartaSzansy(5, 'Przeprowadź remont generalny wszystkich swoich nieruchomości: Zapłać za każdy dom 25
+Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli), 
+	new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 200),
+	new KartaSzansy(8, 'Bank wypłaca Ci dywidendę. Pobierz 50', 50), new KartaSzansy(9, 'Zwrot podatku.Pobierz 150', 150),
+	new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 200), new KartaSzansy(11, 'Zapłać grzywne 20', -20), 
+	new KartaSzansy(12, 'Cofnij się o trzy pola.', 0), new KartaSzansy(13, 'Idź na Długi Targ', 0),
+	new KartaSzansy(14, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), new KartaSzansy(15, 'Wymieniasz elektrykę w swoich nieruchomościach. Zapłać: 40 za każdy dom 115 za każdy hotel', (-40*ilosc_domkow) + (-115*ilosc_hoteli),
+	new KartaSzansy(16, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), new KartaSzansy(17, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
+	new KartaSzansy(18, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), new KartaSzansy(19, 'Dostałeś premię! Pobierz 100', 100),
+	new KartaSzansy(20, 'Masz urodziny! Pobierz 10 od każdego gracza.', 10*ilosc_graczy), new KartaSzansy(21, 'Fundusz Zdrowotny. Pobierz 100', 100),
+	new KartaSzansy(22, 'Zapłać za wizytę u dentysty 100', -100), new KartaSzansy(23, 'Zapłać czesne 50', -50),
+	new KartaSzansy(24, 'Przejdź na START (Pobierz M 200)', 200), new KartaSzansy(25, 'Wyprzedaż! Pobierz 50', 50),
+	new KartaSzansy(26, 'Zapłać za wizytę Lekarską 50', 50), new KartaSzansy(27, 'Zwrot podatku. Pobierz 20', 20),
+	new KartaSzansy(28, 'Otrzymujesz 30 za porady finansowe', 30), new KartaSzansy(29, 'Odziedziczyłeś spadek. Pobierz 100', 100), ]
+
 	var Pole = function(typ, wartosc, kolor, nazwa, wlasciciel, domki, domekCena, hotel, hotelCena, dzielnica){
 		this.typ = typ;
 		this.wartosc = wartosc;
@@ -130,8 +154,6 @@ $(function(){
 					if(dzielnica.lista[i] && pola[dzielnica.lista[i]].wlasciciel !== graczId){
 						ownsAll = false;
 					}
-					gracze[graczId].ulice.push(1);
-					gracze[graczId].ulice.push(3);
 
 						console.log(pola[dzielnica.lista[i]].wlasciciel + " : " +pola[dzielnica.lista[i]].domki + " : " + pola[dzielnica.lista[i]].hotel);
 					liczbaDomki += pola[dzielnica.lista[i]].domki;
