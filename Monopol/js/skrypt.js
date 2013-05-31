@@ -1,8 +1,9 @@
 $(function(){
 	'use strict';
-	var Dzielnica = function(numer, nazwa){
+	var Dzielnica = function(numer, nazwa, kolor){
 		this.numer = numer;
 		this.nazwa = nazwa;
+		this.kolor = kolor
 		this.lista = [];
 		return this;
 	};
@@ -13,23 +14,6 @@ $(function(){
 		this.kwota = kwota;
 		return this;
 	}
-
-	var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 200), new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 200),
-	new KartaSzansy(2, 'Zrobiłeś błąd w kalkulacjach podatkowych. Zapłać każdemu graczowi 50', (-50*ilosc_graczy), new KartaSzansy(3, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0),
-	new KartaSzansy(4, 'Idź do Elektrowni.Jeśli nie jest zajęta możesz ją kupić od banku. Jeśli jest już zajęta rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), new KartaSzansy(5, 'Przeprowadź remont generalny wszystkich swoich nieruchomości: Zapłać za każdy dom 25
-Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli), 
-	new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 200),
-	new KartaSzansy(8, 'Bank wypłaca Ci dywidendę. Pobierz 50', 50), new KartaSzansy(9, 'Zwrot podatku.Pobierz 150', 150),
-	new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 200), new KartaSzansy(11, 'Zapłać grzywne 20', -20), 
-	new KartaSzansy(12, 'Cofnij się o trzy pola.', 0), new KartaSzansy(13, 'Idź na Długi Targ', 0),
-	new KartaSzansy(14, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), new KartaSzansy(15, 'Wymieniasz elektrykę w swoich nieruchomościach. Zapłać: 40 za każdy dom 115 za każdy hotel', (-40*ilosc_domkow) + (-115*ilosc_hoteli),
-	new KartaSzansy(16, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), new KartaSzansy(17, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
-	new KartaSzansy(18, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), new KartaSzansy(19, 'Dostałeś premię! Pobierz 100', 100),
-	new KartaSzansy(20, 'Masz urodziny! Pobierz 10 od każdego gracza.', 10*ilosc_graczy), new KartaSzansy(21, 'Fundusz Zdrowotny. Pobierz 100', 100),
-	new KartaSzansy(22, 'Zapłać za wizytę u dentysty 100', -100), new KartaSzansy(23, 'Zapłać czesne 50', -50),
-	new KartaSzansy(24, 'Przejdź na START (Pobierz M 200)', 200), new KartaSzansy(25, 'Wyprzedaż! Pobierz 50', 50),
-	new KartaSzansy(26, 'Zapłać za wizytę Lekarską 50', 50), new KartaSzansy(27, 'Zwrot podatku. Pobierz 20', 20),
-	new KartaSzansy(28, 'Otrzymujesz 30 za porady finansowe', 30), new KartaSzansy(29, 'Odziedziczyłeś spadek. Pobierz 100', 100), ]
 
 	var Pole = function(typ, wartosc, kolor, nazwa, wlasciciel, domki, domekCena, hotel, hotelCena, dzielnica){
 		this.typ = typ;
@@ -55,34 +39,39 @@ Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli),
 
 	var graczId = 0;
 	var poleId = 0;
+	var naleznosc = 0;
+	var cenaDomek = 0;
+	var cenaHotel = 0;
+	var iloscDomkow = 0;
+	var iloscHoteli = 0;
+	var iloscPol = 0;
 
-	var dzielnice = [ new Dzielnica(1, 'Brzeźno'), new Dzielnica(2, 'Nowy Port'), new Dzielnica(3, 'Zaspa'), new Dzielnica(4, 'Przymorze'), 
-		new Dzielnica(5, 'Żabianka'), new Dzielnica(6, 'Oliwa'), new Dzielnica(7, 'Wrzeszcz'), new Dzielnica(8, 'Centrum'), 
-		new Dzielnica(9, 'Pętle'), new Dzielnica(10, 'Użytkowe')];
-
+	var dzielnice = [ new Dzielnica(1, 'Brzeźno', 'purple'), new Dzielnica(2, 'Nowy Port', 'aqua'), new Dzielnica(3, 'Zaspa', 'magenta'), new Dzielnica(4, 'Przymorze', 'orange'), 
+		new Dzielnica(5, 'Żabianka', 'red'), new Dzielnica(6, 'Oliwa', 'yellow'), new Dzielnica(7, 'Wrzeszcz', 'green'), new Dzielnica(8, 'Centrum', 'blue'), 
+		new Dzielnica(9, 'Pętle', 'white'), new Dzielnica(10, 'Użytkowe', 'white')];
 	var gracze = [ new Gracz('Szefo', 'red'), new Gracz('V-c_Szefo', 'blue'), new Gracz('ja', 'green') ];
 		
 	var trasa = [ '0101' , '0102', '0103', '0104', '0105', '0106', '0107', '0108', '0109', '0110', '0210', '0209', '0208', '0207', '0206', 
 		'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
 		'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
-	var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 60, 0, 120, 1), new Pole('Szansa'), 
-		new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 60, 0, 120, 1), new Pole('Podatek_Dochodowy', 200),
-		new Pole('Linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 100, 0, 200, 2),
-		new Pole('Szansa'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 100, 0, 200, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 120, 0, 200, 2),
-		new Pole('Odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 280, 0, 560, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
-		new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 280, 0, 560, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 300, 0, 600, 3),
-		new Pole('Linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 320, 0, 640, 4), new Pole('szansa'),
-		new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 320, 0, 640, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 340, 0, 660, 4), new Pole('Parking'),
-		new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 360, 0, 680, 5), new Pole('Szansa'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 360, 0, 680, 5),
-		new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 360, 0, 680, 5), new Pole('Linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
-		new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 360, 0, 680, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 360, 0, 680, 6),
-		new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 360, 0, 680, 6),
-		new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 360, 0, 680, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 360, 0, 680, 7),
-		new Pole('Szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 360, 0, 680, 7), new Pole('Linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
-		new Pole('Szansa'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 360, 0, 680, 8), new Pole('PodateOdLuksusu', 200), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 360, 0, 680, 8) ]; //TO-DO!
+		var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 1, 60, 0, 120, 1), new Pole('Szansa'), 
+			new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 2, 60, 1, 120, 1), new Pole('Podatek_Dochodowy', 200),
+			new Pole('Linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 100, 0, 200, 2),
+			new Pole('Szansa'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 100, 0, 200, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 120, 0, 200, 2),
+			new Pole('Odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 280, 0, 560, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
+			new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 280, 0, 560, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 300, 0, 600, 3),
+			new Pole('Linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 320, 0, 640, 4), new Pole('szansa'),
+			new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 320, 0, 640, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 340, 0, 660, 4), new Pole('Parking'),
+			new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 360, 0, 680, 5), new Pole('Szansa'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 360, 0, 680, 5),
+			new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 360, 0, 680, 5), new Pole('Linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
+			new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 360, 0, 680, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 360, 0, 680, 6),
+			new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 360, 0, 680, 6),
+			new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 360, 0, 680, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 360, 0, 680, 7),
+			new Pole('Szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 360, 0, 680, 7), new Pole('Linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
+			new Pole('Szansa'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 360, 0, 680, 8), new Pole('PodateOdLuksusu', 200), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 360, 0, 680, 8) ]; //TO-DO!
 
-	dzielnice[0].lista.push(1);
+		dzielnice[0].lista.push(1);
 			dzielnice[0].lista.push(3);
 			dzielnice[1].lista.push(6);
 			dzielnice[1].lista.push(8);
@@ -116,6 +105,40 @@ Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli),
 			pola[1].wlasciciel = 0;
 			pola[3].wlasciciel = 0;
 
+			gracze[0].ulice.push(37);
+			gracze[0].ulice.push(39);
+			pola[37].wlasciciel = 0;
+			pola[39].wlasciciel = 0;
+
+		var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 200), 
+			new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 200),
+			new KartaSzansy(2, 'Zrobiłeś błąd w kalkulacjach podatkowych. Zapłać 200.', -200), 
+			new KartaSzansy(3, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0),
+			new KartaSzansy(4, 'Idź do Elektrowni.Jeśli nie jest zajęta możesz ją kupić od banku. Jeśli jest już zajęta rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
+			new KartaSzansy(5, 'Otrzymujesz 30 za porady finansowe', 30), 
+			new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
+			new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 200),
+			new KartaSzansy(8, 'Bank wypłaca Ci dywidendę. Pobierz 50', 50), 
+			new KartaSzansy(9, 'Zwrot podatku.Pobierz 150', 150),
+			new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 200), 
+			new KartaSzansy(11, 'Zapłać grzywne 20', -20), 
+			new KartaSzansy(12, 'Cofnij się o trzy pola.', 0), 
+			new KartaSzansy(13, 'Idź na Długi Targ', 0),
+			new KartaSzansy(14, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
+			new KartaSzansy(15, 'Odziedziczyłeś spadek. Pobierz 100', 100),
+			new KartaSzansy(16, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), 
+			new KartaSzansy(17, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
+			new KartaSzansy(18, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
+			new KartaSzansy(19, 'Dostałeś premię! Pobierz 100', 100),
+			new KartaSzansy(20, 'Masz urodziny! Pobierz 100.', 100), 
+			new KartaSzansy(21, 'Fundusz Zdrowotny. Pobierz 100', 100),
+			new KartaSzansy(22, 'Zapłać za wizytę u dentysty 100', -100), 
+			new KartaSzansy(23, 'Zapłać czesne 50', -50),
+			new KartaSzansy(24, 'Przejdź na START (Pobierz M 200)', 200), 
+			new KartaSzansy(25, 'Wyprzedaż! Pobierz 50', 50),
+			new KartaSzansy(26, 'Zapłać za wizytę Lekarską 50', 50), 
+			new KartaSzansy(27, 'Zwrot podatku. Pobierz 20', 20) ];
+
 
 		var pionek = function (id) { return '<div class="pionek" id="pionek'+id+'"></div>'; };
 
@@ -145,51 +168,146 @@ Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli),
 			var pole = pola[((pionekPozycja+moveSize)%40)];
 				console.log(pole);
 
-			var dzielnica = dzielnice[pole.dzielnica-1];
-				var ownsAll = true;
-				var liczbaDomki = 0;
-				var liczbaHotele = 0;
-				var iloscPol = 0;
-				for(var i=0; i < dzielnica.lista.length; i++){
-					if(dzielnica.lista[i] && pola[dzielnica.lista[i]].wlasciciel !== graczId){
-						ownsAll = false;
-					}
-
-						console.log(pola[dzielnica.lista[i]].wlasciciel + " : " +pola[dzielnica.lista[i]].domki + " : " + pola[dzielnica.lista[i]].hotel);
-					liczbaDomki += pola[dzielnica.lista[i]].domki;
-					liczbaHotele += pola[dzielnica.lista[i]].hotel;
-					iloscPol++;
+				//sprawdzanie na jakie pole staneliśmy
+				if(pole.nazwa === 'szansa'){
+					//todo szansaModal
 				}
-					console.log('iloscPol: ' + iloscPol + ' ownsAll: ' + ownsAll + ' domki: ' + liczbaDomki + ' hotele: ' + liczbaHotele);
+				//!!!!!!!!@@@@@@@@@#########*********else if....
 
-			if(pole.wlasciciel === undefined){
-				$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
-				$('#buyModalKasa').text('Stan konta: ' + gracz.kasa);
-				$('#buyModalCena').text('Cena: ' + pole.wartosc);
-				$('#buyModal').modal('show');
-			}
-			else if(pole.wlasciciel === graczId && ownsAll){
-				//todo modal do budowania
-				$('#propertyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
-				$('#propertyModalKasa').text('Stan konta: ' + gracz.kasa);
-				$('#propertyModalCena').text('Cena: ' + pole.domekCena);
-				$('#propertyModal').modal('show');
-			}
-			else if(pole.wlasciciel !== graczId){
-					var naleznosc = pole.wartosc;
-					if(ownsAll){ naleznosc *= iloscPol; }
-				//gracz.kasa -= naleznosc;
-				//gracze[pole.wlasciciel].kasa += naleznosc;
-				//	console.log(gracz.nick + ' kasa: ' + gracz.kasa);
-				//	console.log(gracze[pole.wlasciciel].nick + ' kasa: ' + gracze[pole.wlasciciel].kasa);
-				$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
-				$('#payModalKasa').text('Stan konta:' + gracz.kasa);
-				$('#payModalCena').text('Należność: ' + naleznosc);
-				$('#payModal').modal('show');
-			} else {
+				else { //normale pole
 
-			}
+					var dzielnica = dzielnice[pole.dzielnica-1];
+						var ownsAll = true;
+						var oneOwner = true;
+						var owner = pola[dzielnica.lista[0]].wlasciciel;
+						var liczbaDomki = 0;
+						var liczbaHotele = 0;
+						var iloscPol = 0;
+						for(var i=0; i < dzielnica.lista.length; i++){
+							if(pola[dzielnica.lista[i]].wlasciciel !== owner){
+								oneOwner = false;
+							}
+							if(dzielnica.lista[i] && pola[dzielnica.lista[i]].wlasciciel !== graczId){
+								ownsAll = false;
+							}
+
+								console.log(pola[dzielnica.lista[i]].wlasciciel + " : " +pola[dzielnica.lista[i]].domki + " : " + pola[dzielnica.lista[i]].hotel);
+							liczbaDomki += pola[dzielnica.lista[i]].domki;
+							liczbaHotele += pola[dzielnica.lista[i]].hotel;
+							iloscPol++;
+						}
+							console.log('iloscPol: ' + iloscPol + ' ownsAll: ' + ownsAll + ' domki: ' + liczbaDomki + ' hotele: ' + liczbaHotele);
+
+					if(pole.wlasciciel === undefined){
+						$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
+						$('#buyModalKasa').text('Stan konta: ' + gracz.kasa);
+						$('#buyModalCena').text('Cena: ' + pole.wartosc);
+						$('#buyModal').modal('show');
+					}
+					else if(pole.wlasciciel === graczId && ownsAll){
+						//todo modal do budowania
+						$('#propertyModalKasa').text(gracz.kasa);
+						$('#propertyModalCena').text('0');
+						$('#propertyModal').modal('show');
+
+						var ownedDzielnice =[];
+						var ownsDzielnica = true;
+
+						for(var j = 0; j < dzielnice.length; j++){
+							if(pola[dzielnice[j].lista[0]].wlasciciel === graczId){
+								for(var k=1; k < dzielnice[j].lista.length; k++){
+									if(pola[dzielnice[j].lista[k]].wlasciciel !== graczId){
+										ownsDzielnica = false;
+										break;
+									}
+								}
+								if(ownsDzielnica) { ownedDzielnice.push(dzielnice[j]); }
+							}
+						}
+						 console.log(ownedDzielnice);
+						 $('#propertyDzielnicaList').append('<option value="null">---</option>');
+						 $.each(ownedDzielnice, function(i, item) {
+						 	$('#propertyDzielnicaList').append('<option value="'+item.numer+'">'+item.nazwa+'</option>');
+						 });
+
+					}
+					else if(pole.wlasciciel !== graczId){
+							naleznosc = pole.wartosc;
+							if(oneOwner){ 
+								if(liczbaDomki === 0 && liczbaHotele === 0){
+									naleznosc *= iloscPol; 
+								} else {
+									//#####@@@@@@@@@@@@@!!!!!!!!!!!!!!!to-do wyliczanie naleznosci gdy teren zabudowany
+								}
+
+							}
+						//gracz.kasa -= naleznosc;
+						//gracze[pole.wlasciciel].kasa += naleznosc;
+						//	console.log(gracz.nick + ' kasa: ' + gracz.kasa);
+						//	console.log(gracze[pole.wlasciciel].nick + ' kasa: ' + gracze[pole.wlasciciel].kasa);
+						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+						$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#payModal').modal('show');
+					} else {
+
+					}
+				}
 		};
+
+		$('#propertyDzielnicaList').change(function () {
+			iloscDomkow = 0;
+			iloscHoteli = 0;
+			var data = $(this).val();
+			if(data === 'null'){
+				cenaDomek = 0;
+				cenaHotel = 0;
+				//console.log(cenaDomek + " : " + cenaHotel);
+				$('#propertyDomkiIlosc').text(0);
+				$('#propertyHoteleIlosc').text(0);
+			}
+			else {
+				data = parseInt(data, 10) - 1;
+				cenaDomek = pola[dzielnice[data].lista[0]].domekCena;
+				cenaHotel = pola[dzielnice[data].lista[0]].hotelCena;
+				//console.log(cenaDomek + " : " + cenaHotel);
+				iloscPol = dzielnice[data].lista.length;
+				for(var k = 0; k < iloscPol; k++){
+					iloscDomkow += pola[dzielnice[data].lista[k]].domki;
+					iloscHoteli += pola[dzielnice[data].lista[k]].hotel;
+				}
+				$('#propertyDomki').attr('max', (iloscPol * 4) - iloscDomkow);
+				$('#propertyHotele').attr('max', (iloscPol) - iloscHoteli);
+
+				$('#propertyDomkiIlosc').text(iloscDomkow);
+				$('#propertyHoteleIlosc').text(iloscHoteli);				
+
+			}
+			$('#propertyDomki').change();
+			$('#propertyHotele').change();
+		});
+
+		$('#propertyDomki').change(function () {
+			var data = $(this).val();
+
+			//console.log(data * cenaDomek);
+
+			$('#propertyDomkiKoszt').text(data * cenaDomek);
+			var koszt = parseInt($('#propertyDomkiKoszt').text() ,10) + parseInt($('#propertyHoteleKoszt').text(), 10) ;
+			$('#propertyModalCena').text(koszt);
+
+		});
+
+		$('#propertyHotele').change(function () {
+			var data = $(this).val();
+
+			//console.log(data * cenaHotel);
+
+			$('#propertyHoteleKoszt').text(data * cenaHotel);
+			var koszt = parseInt($('#propertyDomkiKoszt').text() ,10) + parseInt($('#propertyHoteleKoszt').text(), 10) ;
+			$('#propertyModalCena').text(koszt);
+
+		});
 
 		$('#buyModalSaveBtn').click(function(){
 			var gracz = gracze[graczId];
@@ -207,7 +325,6 @@ Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli),
 
 		$('#payModalSaveBtn').click(function(){
 			var gracz = gracze[graczId];
-			var naleznosc = pola[poleId].wartosc;
 			gracz.kasa -= naleznosc;
 			gracze[pola[poleId].wlasciciel].kasa += naleznosc;
 			$('#payModal').modal('hide');
@@ -218,19 +335,56 @@ Zapłać za każdy hotel 100', 25*ilosc_domkow + 100*ilosc_hoteli),
 			,1000);
 			console.log(gracz.nick + ' kasa po zaplacie: ' + gracz.kasa);
 			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po zaplacie: ' + gracze[pola[poleId].wlasciciel].kasa);
+			naleznosc = 0;
 		});
 
 		$('#propertyModalSaveBtn').click(function(){
-			var gracz = gracze[graczId];
-			var naleznosc = pola[poleId].domekCena;
-			gracze[pola[poleId].wlasciciel].kasa -= naleznosc;
-			$('#propertyModal').modal('hide');
-			setTimeout(function(){
-				graczId++;
-				movePionek(3, graczId);
+			var selectedIloscDomkow = $('#propertyDomki').val();
+			var selectedIloscHoteli = $('#propertyHotele').val();
+			var selectedStanKonta = parseInt($('#propertyModalKasa').text(),10);
+			var selectedKoszt = parseInt($('#propertyModalCena').text(),10);
+
+			if( selectedIloscHoteli > 0 && iloscDomkow + selectedIloscDomkow !== iloscPol * 4 ){
+				console.log('za mało donków na hotiel');
+
+			} else if(selectedStanKonta < selectedKoszt) {
+				console.log('kasa musi się zgadzać');
 			}
-			,1000);
-			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po kupnie domku: ' + gracze[pola[poleId].wlasciciel].kasa);
+			else{
+				gracze[graczId].kasa -= selectedKoszt;
+				var dzielnia = parseInt($('#propertyDzielnicaList').val(), 10) - 1;
+				//console.log('d:' + dzielnia);
+				var npd = selectedIloscDomkow % iloscPol;
+				var pd = selectedIloscDomkow - npd;
+
+				//console.log('npd: ' + npd + ' pd: ' + pd);
+
+				for(var i =0; i < iloscPol; i++){
+					pola[dzielnice[dzielnia].lista[i]].domki += pd / iloscPol;
+					if(i === iloscPol) { pola[dzielnice[dzielnia].lista[i]].domki += npd; }
+				}
+
+				var nph = selectedIloscHoteli % iloscPol;
+				var ph = selectedIloscHoteli - nph;
+
+				//console.log('nph: ' + nph + ' ph: ' + ph);
+
+				for(var j =0; j < iloscPol; j++){
+					pola[dzielnice[dzielnia].lista[j]].hotel += ph;
+					if(i === iloscPol){ pola[dzielnice[dzielnia].lista[j]].hotel += nph; }
+				}
+
+				console.log(pola[1]);
+				console.log(pola[3]);
+
+				$('#propertyModal').modal('hide');
+				setTimeout(function(){
+					graczId++;
+					movePionek(3, graczId);
+				}
+				,1000);
+				console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po kupnie domku: ' + gracze[pola[poleId].wlasciciel].kasa);
+			}
 		});
 
 		$('#propertyModalCancelBtn').click(function(){
