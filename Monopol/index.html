@@ -44,23 +44,68 @@
 
 		<div  id="propertyModal" class="modal hide fade">
 		  <div class="modal-header">
-		    <h3 id="propertyModalLabel" >Modal header</h3>
+		    <h3 id="propertyModalLabel" >Budowanie</h3>
 		  </div>
 		  <div class="modal-body" id="propertyModalBody">
-		    <p id="propertyModalKasa"></p>
-		    <p id="propertyModalCena"></p>
+			<table class="table">
+				<tr>
+					<td>
+						Dzielnica:
+					</td>
+					<td colspan="2">
+						<div class="control-group">
+							<select id="propertyDzielnicaList">
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Domki (<span id="propertyDomkiIlosc">0</span>):
+					</td>
+					<td>
+						<div class="control-group form-inline">
+							<input type="number" min="0" max="12" step="1" id="propertyDomki" value="0"/>
+						</div>
+					</td>
+					<td>
+						Koszt: <span id="propertyDomkiKoszt">0</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Hotele (<span id="propertyHoteleIlosc">0</span>):
+					</td>
+					<td>
+						<div class="control-group form-inline">
+							<input type="number" min="0" max="3" step="1" id="propertyHotele" value="0"/>
+						</div>
+					</td>
+					<td>
+						Koszt: <span id="propertyHoteleKoszt">0</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					    Stan konta: <span id="propertyModalKasa"></span>
+					</td>
+					<td colspan="2">
+					    Koszt całkowity: <span id="propertyModalCena"></span>
+					</td>
+				</tr>
+			</table>
 		  </div>
 		  <div class="modal-footer">
 		  	<a href="#" class="btn" id="propertyModalCancelBtn">Anuluj</a>
-		    <a href="#" class="btn btn-primary" id="propertyModalSaveBtn" >Kup posiadłość</a>
+		    <a href="#" class="btn btn-primary" id="propertyModalSaveBtn">Buduj</a>
 		  </div>
 		</div>
 
 		<script src="js/jquery-1.9.1.js"></script>
-		<script src="js/bootstrap.js"></script>
-		<script src="js/bootstrap-modal.js"></script>
-		<script src="js/monopol.js"></script>
-		<script src="js/skrypt.js"></script>
+			<script src="js/bootstrap.js"></script>
+			<script src="js/bootstrap-modal.js"></script>
+			<script src="js/monopol.js"></script>
+			<script src="js/skrypt.js"></script>
 	</body>
 
 </html>
