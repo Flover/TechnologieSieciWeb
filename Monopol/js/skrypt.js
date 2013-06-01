@@ -15,6 +15,13 @@ $(function(){
 		return this;
 	}
 
+	var KartaRyzyka = function (numer, tresc, kwota) {
+		this.numer = numer;
+		this.tresc = tresc;
+		this.kwota = kwota;
+		return this;
+	}
+
 	var Pole = function(typ, wartosc, kolor, nazwa, wlasciciel, domki, domekCena, hotel, hotelCena, dzielnica){
 		this.typ = typ;
 		this.wartosc = wartosc;
@@ -36,7 +43,7 @@ $(function(){
 		this.pionek = pionek;
 		return this;
 	};
-
+	var ryzykoId = 0
 	var graczId = 0;
 	var poleId = 0;
 	var naleznosc = 0;
@@ -55,21 +62,21 @@ $(function(){
 		'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
 		'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
-		var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 50, 0, 250, 1), new Pole('Szansa'), 
-			new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 50, 0, 250, 1), new Pole('Podatek_Dochodowy', 200),
-			new Pole('Linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 50, 0, 250, 2),
-			new Pole('Szansa'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 50, 0, 250, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 50, 0, 250, 2),
-			new Pole('Odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 100, 0, 500, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
+		var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 50, 0, 250, 1), new Pole('szansa'), 
+			new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 50, 0, 250, 1), new Pole('podatek', 200),
+			new Pole('linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 50, 0, 250, 2),
+			new Pole('ryzyko'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 50, 0, 250, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 50, 0, 250, 2),
+			new Pole('odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 100, 0, 500, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
 			new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 100, 0, 500, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 100, 0, 500, 3),
-			new Pole('Linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 100, 0, 500, 4), new Pole('szansa'),
-			new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 100, 0, 500, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 100, 0, 500, 4), new Pole('Parking'),
-			new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 150, 0, 750, 5), new Pole('Szansa'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 150, 0, 750, 5),
-			new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 150, 0, 750, 5), new Pole('Linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
+			new Pole('linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 100, 0, 500, 4), new Pole('szansa'),
+			new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 100, 0, 500, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 100, 0, 500, 4), new Pole('parking'),
+			new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 150, 0, 750, 5), new Pole('ryzyko'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 150, 0, 750, 5),
+			new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 150, 0, 750, 5), new Pole('linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
 			new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 150, 0, 750, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 150, 0, 750, 6),
 			new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 150, 0, 750, 6),
 			new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 200, 0, 1000, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 200, 0, 1000, 7),
-			new Pole('Szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 200, 0, 1000, 7), new Pole('Linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
-			new Pole('Szansa'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 200, 0, 1000, 8), new Pole('PodateOdLuksusu', 200), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 200, 0, 1000, 8) ]; //TO-DO!
+			new Pole('szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 200, 0, 1000, 7), new Pole('linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
+			new Pole('ryzyko'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 200, 0, 1000, 8), new Pole('podatek', 100), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 200, 0, 1000, 8) ]; //TO-DO!
 
 		dzielnice[0].lista.push(1);
 			dzielnice[0].lista.push(3);
@@ -110,35 +117,35 @@ $(function(){
 			pola[37].wlasciciel = 0;
 			pola[39].wlasciciel = 0;
 
-		var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 200), 
-			new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 200),
+		var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 0), 
+			new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 0),
 			new KartaSzansy(2, 'Zrobiłeś błąd w kalkulacjach podatkowych. Zapłać 200.', -200), 
 			new KartaSzansy(3, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0),
 			new KartaSzansy(4, 'Idź do Elektrowni.Jeśli nie jest zajęta możesz ją kupić od banku. Jeśli jest już zajęta rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
 			new KartaSzansy(5, 'Otrzymujesz 30 za porady finansowe', 30), 
 			new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
-			new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 200),
+			new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 0),
 			new KartaSzansy(8, 'Bank wypłaca Ci dywidendę. Pobierz 50', 50), 
 			new KartaSzansy(9, 'Zwrot podatku.Pobierz 150', 150),
-			new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 200), 
+			new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 0), 
 			new KartaSzansy(11, 'Zapłać grzywne 20', -20), 
 			new KartaSzansy(12, 'Cofnij się o trzy pola.', 0), 
-			new KartaSzansy(13, 'Idź na Długi Targ', 0),
-			new KartaSzansy(14, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
-			new KartaSzansy(15, 'Odziedziczyłeś spadek. Pobierz 100', 100),
-			new KartaSzansy(16, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), 
-			new KartaSzansy(17, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
-			new KartaSzansy(18, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
-			new KartaSzansy(19, 'Dostałeś premię! Pobierz 100', 100),
-			new KartaSzansy(20, 'Masz urodziny! Pobierz 100.', 100), 
-			new KartaSzansy(21, 'Fundusz Zdrowotny. Pobierz 100', 100),
-			new KartaSzansy(22, 'Zapłać za wizytę u dentysty 100', -100), 
-			new KartaSzansy(23, 'Zapłać czesne 50', -50),
-			new KartaSzansy(24, 'Przejdź na START (Pobierz M 200)', 200), 
-			new KartaSzansy(25, 'Wyprzedaż! Pobierz 50', 50),
-			new KartaSzansy(26, 'Zapłać za wizytę Lekarską 50', 50), 
-			new KartaSzansy(27, 'Zwrot podatku. Pobierz 20', 20) ];
+			new KartaSzansy(13, 'Idź na Długi Targ', 0) ];
 
+		var kartyRyzyka = [ new KartaRyzyka(0, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
+			new KartaRyzyka(1, 'Odziedziczyłeś spadek. Pobierz 100', 100),
+			new KartaRyzyka(2, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), 
+			new KartaRyzyka(3, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
+			new KartaRyzyka(4, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
+			new KartaRyzyka(5, 'Dostałeś premię! Pobierz 100', 100),
+			new KartaRyzyka(6, 'Masz urodziny! Pobierz 100.', 100), 
+			new KartaRyzyka(7, 'Fundusz Zdrowotny. Pobierz 100', 100),
+			new KartaRyzyka(8, 'Zapłać za wizytę u dentysty 100', -100), 
+			new KartaRyzyka(9, 'Zapłać czesne 50', -50),
+			new KartaRyzyka(10, 'Przejdź na START (Pobierz 200)', 0), 
+			new KartaRyzyka(11, 'Wyprzedaż! Pobierz 50', 50),
+			new KartaRyzyka(12, 'Zapłać za wizytę Lekarską 50', 50), 
+			new KartaRyzyka(13, 'Zwrot podatku. Pobierz 20', 20) ];
 
 		var pionek = function (id) { return '<div class="pionek" id="pionek'+id+'"></div>'; };
 
@@ -169,9 +176,35 @@ $(function(){
 				console.log(pole);
 
 				//sprawdzanie na jakie pole staneliśmy
-				if(pole.nazwa === 'szansa'){
+				if(pole.typ === 'szansa'){
 					//todo szansaModal
+					var szansaId = function getRandomInt () {
+						var min = 0;
+						var max = 13;
+						return Math.floor(Math.random() * (max - min + 1)) + min;
+					};
+					console.log('Numer karty to: ' + szansaId())
+					$('#chanceModalContent').text(kartySzansy[szansaId()].tresc);
+					$('#chanceModal').modal('show');
 				}
+				else if(pole.typ === 'ryzyko'){
+					var ryzykoId = function getRandomInt () {
+						var min = 0;
+						var max = 13;
+						return Math.floor(Math.random() * (max - min + 1)) + min;
+					};
+					$('#chanceModalContent').text(kartyRyzyka[ryzykoId()].tresc);
+					$('#chanceModal').modal('show');
+				}
+				else if(pole.typ ==='podatek'){
+					$('#taxModalContent').text('Dorwał Cię ZUS, płacisz ' + pola[poleId].wartosc);
+						//$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						//$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#taxModal').modal('show');
+				}
+				else if (pole.typ === 'odwiedziny' || pole.typ === 'parking') {
+					graczId++;
+				};
 				//!!!!!!!!@@@@@@@@@#########*********else if....
 
 				else { //normale pole
@@ -232,13 +265,12 @@ $(function(){
 
 					}
 					else if(pole.wlasciciel !== graczId){
-							naleznosc = (pole.wartosc/10);
+							naleznosc = (pole.wartosc/20);
 							if(oneOwner){ 
 								if(liczbaDomki === 0 && liczbaHotele === 0){
 									naleznosc *= 2; 
 								} else if(liczbaDomki === 1 && liczbaHotele === 0) {
 									naleznosc *= 5;
-									//#####@@@@@@@@@@@@@!!!!!!!!!!!!!!!to-do wyliczanie naleznosci gdy teren zabudowany
 								} else if (liczbaDomki === 2 && liczbaHotele === 0) {
 									naleznosc *= 15;
 								} else if (liczbaDomki === 3 && liczbaHotele === 0) {
@@ -246,7 +278,7 @@ $(function(){
 								} else if (liczbaDomki === 4 && liczbaHotele === 0) {
 									naleznosc *= 80;
 								} else if (liczbaDomki === 0 && liczbaHotele === 1) {
-									naleznosc *= 120;
+									naleznosc *= 100;
 								}
 
 							}
@@ -344,7 +376,42 @@ $(function(){
 			,1000);
 			console.log(gracz.nick + ' kasa po zaplacie: ' + gracz.kasa);
 			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po zaplacie: ' + gracze[pola[poleId].wlasciciel].kasa);
-			naleznosc = 0;
+		});
+
+		$('#chanceModalSaveBtn').click(function(){
+			var gracz = gracze[graczId];
+			gracz.kasa += kartySzansy[szansaId].kwota;
+			$('#chanceModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+			console.log(gracz.nick + ' kasa po "szansie": ' + gracz.kasa);
+		});
+
+		$('#riskModalSaveBtn').click(function(){
+			var gracz = gracze[graczId];
+			gracz.kasa += kartySzansy[szansaId].kwota;
+			$('#riskModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+			console.log(gracz.nick + ' kasa po "ryzyku": ' + gracz.kasa);
+		});
+
+		$('#taxModalSaveBtn').click(function(){
+			var gracz = gracze[graczId];
+			gracz.kasa -= pola[poleId].wartosc;
+			$('#taxModal').modal('hide');
+			setTimeout(function(){
+				graczId++;
+				movePionek(3, graczId);
+			}
+			,1000);
+			console.log(gracz.nick + ' kasa po "podatku": ' + gracz.kasa);
 		});
 
 		$('#propertyModalSaveBtn').click(function(){
@@ -423,5 +490,5 @@ $(function(){
 
 		console.log(kostka());
 
-		movePionek(3, graczId);
+		movePionek(4, graczId);
 });
