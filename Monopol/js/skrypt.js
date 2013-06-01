@@ -43,8 +43,7 @@ $(function(){
 		this.pionek = pionek;
 		return this;
 	};
-	var ryzykoId = 0
-	var graczId = 0;
+	var graczId = 1;
 	var poleId = 0;
 	var naleznosc = 0;
 	var cenaDomek = 0;
@@ -116,6 +115,15 @@ $(function(){
 			gracze[0].ulice.push(39);
 			pola[37].wlasciciel = 0;
 			pola[39].wlasciciel = 0;
+
+			gracze[1].ulice.push(5);
+			gracze[2].ulice.push(15);
+			gracze[0].ulice.push(25);
+			gracze[0].ulice.push(35);
+			pola[5].wlasciciel = 1;
+			pola[15].wlasciciel = 2;
+			pola[25].wlasciciel = 0;
+			pola[35].wlasciciel = 0;
 
 		var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 0), 
 			new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 0),
@@ -198,16 +206,64 @@ $(function(){
 				}
 				else if(pole.typ ==='podatek'){
 					$('#taxModalContent').text('Dorwał Cię ZUS, płacisz ' + pola[poleId].wartosc);
-						//$('#payModalKasa').text('Stan konta:' + gracz.kasa);
-						//$('#payModalCena').text('Należność: ' + naleznosc);
 						$('#taxModal').modal('show');
 				}
 				else if (pole.typ === 'odwiedziny' || pole.typ === 'parking') {
 					graczId++;
-				};
-				//!!!!!!!!@@@@@@@@@#########*********else if....
-
-				else { //normale pole
+				}
+				else if (pole.typ === 'linia'){
+					if(pole.wlasciciel === undefined){
+						$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
+						$('#buyModalKasa').text('Stan konta: ' + gracz.kasa);
+						$('#buyModalCena').text('Cena: ' + pole.wartosc);
+						$('#buyModal').modal('show');
+					}
+					//Jedno pole Linii
+					else if (pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel
+							|| pola[15].wlasciciel === pole.wlasciciel && pola[5].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel
+							|| pola[25].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[5].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel
+							|| pola[35].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[5].wlasciciel !== pole.wlasciciel){
+						naleznosc = (pole.wartosc/8);
+						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+						$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#payModal').modal('show');
+					}
+					//Dwa pola linii
+					else if (pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel 
+						|| pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel 
+						|| pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel 
+						|| pola[5].wlasciciel !== pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel 
+						|| pola[5].wlasciciel !== pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel 
+						|| pola[5].wlasciciel !== pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel){
+						naleznosc = (pole.wartosc/4);
+						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+						$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#payModal').modal('show');
+					}
+					//Trzy pola linii
+					else if(pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel !== pole.wlasciciel
+							|| pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel !== pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel
+							|| pola[5].wlasciciel === pole.wlasciciel && pola[15].wlasciciel !== pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel
+							|| pola[5].wlasciciel !== pole.wlasciciel && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel){
+						naleznosc = (pole.wartosc/2);
+						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+						$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#payModal').modal('show');
+					}
+					//Wszystkie pola Linii
+					else if (pola[5].wlasciciel !== graczId && pola[15].wlasciciel === pole.wlasciciel && pola[25].wlasciciel === pole.wlasciciel && pola[35].wlasciciel === pole.wlasciciel) {
+						naleznosc = pole.wartosc;
+						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
+						$('#payModalKasa').text('Stan konta:' + gracz.kasa);
+						$('#payModalCena').text('Należność: ' + naleznosc);
+						$('#payModal').modal('show');
+					}
+				}
+				//normale pole
+				else { 
 
 					var dzielnica = dzielnice[pole.dzielnica-1];
 						var ownsAll = true;
@@ -237,7 +293,7 @@ $(function(){
 						$('#buyModalCena').text('Cena: ' + pole.wartosc);
 						$('#buyModal').modal('show');
 					}
-					else if(pole.wlasciciel === graczId && ownsAll){
+					else if(pole.wlasciciel === graczId && ownsAll && pole.typ === 'ulica'){
 						//todo modal do budowania
 						$('#propertyModalKasa').text(gracz.kasa);
 						$('#propertyModalCena').text('0');
@@ -358,7 +414,7 @@ $(function(){
 				$('#buyModal').modal('hide');
 				setTimeout(function(){
 					graczId++;
-					movePionek(3, graczId);
+					movePionek(5, graczId);
 				}
 				,1000);
 				console.log(gracz.nick + ' kasa po kupnie: ' + gracz.kasa);
@@ -371,11 +427,11 @@ $(function(){
 			$('#payModal').modal('hide');
 			setTimeout(function(){
 				graczId++;
-				movePionek(3, graczId);
+				movePionek(5, graczId);
 			}
 			,1000);
-			console.log(gracz.nick + ' kasa po zaplacie: ' + gracz.kasa);
-			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po zaplacie: ' + gracze[pola[poleId].wlasciciel].kasa);
+			console.log(gracz.nick + ' kasa po oddaniu zaplacie: ' + gracz.kasa);
+			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po odbiorze kasy: ' + gracze[pola[poleId].wlasciciel].kasa);
 		});
 
 		$('#chanceModalSaveBtn').click(function(){
@@ -490,5 +546,5 @@ $(function(){
 
 		console.log(kostka());
 
-		movePionek(4, graczId);
+		movePionek(35, graczId);
 });
