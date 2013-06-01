@@ -55,21 +55,21 @@ $(function(){
 		'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
 		'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
-		var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 1, 60, 0, 120, 1), new Pole('Szansa'), 
-			new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 2, 60, 1, 120, 1), new Pole('Podatek_Dochodowy', 200),
-			new Pole('Linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 100, 0, 200, 2),
-			new Pole('Szansa'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 100, 0, 200, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 120, 0, 200, 2),
-			new Pole('Odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 280, 0, 560, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
-			new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 280, 0, 560, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 300, 0, 600, 3),
-			new Pole('Linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 320, 0, 640, 4), new Pole('szansa'),
-			new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 320, 0, 640, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 340, 0, 660, 4), new Pole('Parking'),
-			new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 360, 0, 680, 5), new Pole('Szansa'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 360, 0, 680, 5),
-			new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 360, 0, 680, 5), new Pole('Linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
-			new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 360, 0, 680, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 360, 0, 680, 6),
-			new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 360, 0, 680, 6),
-			new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 360, 0, 680, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 360, 0, 680, 7),
-			new Pole('Szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 360, 0, 680, 7), new Pole('Linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
-			new Pole('Szansa'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 360, 0, 680, 8), new Pole('PodateOdLuksusu', 200), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 360, 0, 680, 8) ]; //TO-DO!
+		var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 50, 0, 250, 1), new Pole('Szansa'), 
+			new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 50, 0, 250, 1), new Pole('Podatek_Dochodowy', 200),
+			new Pole('Linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 50, 0, 250, 2),
+			new Pole('Szansa'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 50, 0, 250, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 50, 0, 250, 2),
+			new Pole('Odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 100, 0, 500, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
+			new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 100, 0, 500, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 100, 0, 500, 3),
+			new Pole('Linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 100, 0, 500, 4), new Pole('szansa'),
+			new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 100, 0, 500, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 100, 0, 500, 4), new Pole('Parking'),
+			new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 150, 0, 750, 5), new Pole('Szansa'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 150, 0, 750, 5),
+			new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 150, 0, 750, 5), new Pole('Linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
+			new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 150, 0, 750, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 150, 0, 750, 6),
+			new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 150, 0, 750, 6),
+			new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 200, 0, 1000, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 200, 0, 1000, 7),
+			new Pole('Szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 200, 0, 1000, 7), new Pole('Linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
+			new Pole('Szansa'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 200, 0, 1000, 8), new Pole('PodateOdLuksusu', 200), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 200, 0, 1000, 8) ]; //TO-DO!
 
 		dzielnice[0].lista.push(1);
 			dzielnice[0].lista.push(3);
@@ -232,12 +232,21 @@ $(function(){
 
 					}
 					else if(pole.wlasciciel !== graczId){
-							naleznosc = pole.wartosc;
+							naleznosc = (pole.wartosc/10);
 							if(oneOwner){ 
 								if(liczbaDomki === 0 && liczbaHotele === 0){
-									naleznosc *= iloscPol; 
-								} else {
+									naleznosc *= 2; 
+								} else if(liczbaDomki === 1 && liczbaHotele === 0) {
+									naleznosc *= 5;
 									//#####@@@@@@@@@@@@@!!!!!!!!!!!!!!!to-do wyliczanie naleznosci gdy teren zabudowany
+								} else if (liczbaDomki === 2 && liczbaHotele === 0) {
+									naleznosc *= 15;
+								} else if (liczbaDomki === 3 && liczbaHotele === 0) {
+									naleznosc *= 45;
+								} else if (liczbaDomki === 4 && liczbaHotele === 0) {
+									naleznosc *= 80;
+								} else if (liczbaDomki === 0 && liczbaHotele === 1) {
+									naleznosc *= 120;
 								}
 
 							}
