@@ -132,10 +132,17 @@ $(function(){
 			var pole = pola[((pionekPozycja+moveSize)%40)];
 				console.log(pole);
 
+				//Przejście przez start
+				if(pionekPozycja%40 > (pionekPozycja+moveSize)%40){
+					gracz.kasa += 200;
+					console.log(pionekPozycja);
+					console.log(pionekPozycja+moveSize);
+					console.log('Kasa po przejsciu przez start: ' + gracz.kasa);
+				}
+
 				//sprawdzanie na jakie pole staneliśmy
 				if(pole.typ === 'szansa'){
 					szansaId = getNextSzansa();
-					
 					console.log('Numer karty to: ' + szansaId);
 					$('#chanceModalContent').text(kartySzansy[szansaId].tresc);
 					$('#chanceModal').modal('show');
@@ -150,7 +157,7 @@ $(function(){
 					$('#taxModal').modal('show');
 					gracz.kasa -= pola[poleId].wartosc;
 				}
-				else if (pole.typ === 'odwiedziny' || pole.typ === 'parking') {
+				else if (pole.typ === 'odwiedziny' || pole.typ === 'parking' || pole.typ ==='start') {
 					socket.emit('endMove',{});
 				}
 				else if (pole.typ === 'linia'){
