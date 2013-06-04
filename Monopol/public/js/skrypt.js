@@ -4,6 +4,7 @@ $(function(){
 	console.log('connecting…');
 
 	var dzielnice = [];
+	var dzielnicaId = 0;
 	var gracze = [];
 	var pola = [];
 	var kartySzansy = [];
@@ -20,60 +21,64 @@ $(function(){
 	var iloscPol = 0;
 
 
-    socket.on('connect', function () {
-        console.log('Połączony!');
-    });
+	socket.on('connect', function () {
+		console.log('Połączony!');
+	});
 
-    socket.on('hello', function (data){
-    	if(data){
-	    	dzielnice = data['data'].dzielnice;
-	    	gracze = data['data'].gracze;
-	    	pola = data['data'].pola;
-	    	kartyRyzyka = data['data'].ryzyka;
-	    	kartySzansy = data['data'].szansy;
-	    	console.log(data);
-	    	console.log(gracze[data.graczId]);
-	    	$.each(gracze, function (i, item){
-	    		if(item){
-		    		$('#cell_0101 .cellFigures').append(pionek(i));
-		    	}
-	    	});
-	    }
-	    else{
-	    	alert('przy stole nie ma miejsc, spadaj.');
-	    }
-    });
+	socket.on('hello', function (data){
+		if(data){
+			// console.log(data['data']);
+			dzielnice = data['data'].dzielnice;
+			gracze = data['data'].gracze; 
+			pola = data['data'].pola;
+			kartyRyzyka = data['data'].ryzyka;
+			kartySzansy = data['data'].szansy;
+			// console.log(data);
+			// console.log(gracze[data.graczId]);
 
-    socket.on('newGracz', function (data){
-    	dzielnice = data['data'].dzielnice;
-	    gracze = data['data'].gracze;
-	    pola = data['data'].pola;
-	    kartyRyzyka = data['data'].ryzyka;
-	    kartySzansy = data['data'].szansy;
-	    console.log(data);
-	    console.log(pola);
-	    console.log(gracze);
+			$('.cellFigures').children().remove();
+			$.each(gracze, function (i, item){
+				if(item){
+					$('#cell_0101 .cellFigures').append(pionek(i));
+				}
+			});
+		}
+		else{
+			alert('przy stole nie ma miejsc, spadaj.');
+		}
+	});
+
+	socket.on('newGracz', function (data){
+		// console.log(data['data']);
+		gracze = data['data'].gracze; console.log(data['data'].gracze);
+		pola = data['data'].pola;
+		// console.log(data);
+		// console.log(pola);
+		// console.log(gracze);
 		$('#cell_0101 .cellFigures').append(pionek(data.graczId));
-		console.log('wysyłam');
+		// console.log('wysyłam');
 		socket.emit('startGame', {});
-		console.log('wysłałem');
-    });
+		// console.log('wysłałem');
+	});
 
-    socket.on('makeMove', function (data){
-    	console.log(data);
-    	graczId = data.graczId;
-    	movePionek(data.moveSize, graczId);
-    });
+	socket.on('makeMove', function (data){
+		graczId = data.graczId;
+		gracze = data.gracze;
+		pola = data.pola;	console.log(data.pola);
+		movePionek(data.moveSize, graczId);		
+	});
 
-    socket.on('makeOtherMove', function (data){
-    	console.log(data);
-    	moveOtherPionek(data.moveSize, data.graczId);
-    });
+	socket.on('makeOtherMove', function (data){
+
+		gracze = data.gracze;
+		pola = data.pola;	console.log(data.pola);
+		moveOtherPionek(data.moveSize, data.graczId);
+		});
 
 		
 	var trasa = [ '0101' , '0102', '0103', '0104', '0105', '0106', '0107', '0108', '0109', '0110', '0210', '0209', '0208', '0207', '0206', 
-		'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
-		'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
+			'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
+			'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
 		var pionek = function (id) { return '<div class="pionek" id="pionek'+id+'"></div>'; };
 
@@ -94,7 +99,6 @@ $(function(){
 		};
 
 		var moveOtherPionek = function (moveSize, graczId){
-			var gracz = gracze[graczId];
 			var cell = $('#pionek'+graczId).parent().parent().attr('id').substring(5,9);
 			console.log('cell: ' + cell);
 			var pionekPozycja = 0;
@@ -141,25 +145,39 @@ $(function(){
 				}
 
 				//sprawdzanie na jakie pole staneliśmy
+				//szansa
 				if(pole.typ === 'szansa'){
 					szansaId = getNextSzansa();
 					console.log('Numer karty to: ' + szansaId);
 					$('#chanceModalContent').text(kartySzansy[szansaId].tresc);
 					$('#chanceModal').modal('show');
 				}
+				//sanki
+				else if(pole.typ === 'IdzDoWiezienia'){
+					console.log('sanki');
+					//socket.emit('moveOtherPionek', {'moveSize': -20, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+					//!!!!!!!!!!!!!todo sanki puchałke dostał
+					//movePionek(-20, graczId);
+					socket.emit('endMove',{'gracze': gracze, 'pola': pola});
+				}
+				//ryzyko
 				else if(pole.typ === 'ryzyko'){
 					ryzykoId = getNextRyzyko();
 					$('#riskModalContent').text(kartyRyzyka[ryzykoId].tresc);
 					$('#riskModal').modal('show');
 				}
+				//podatek
 				else if(pole.typ ==='podatek'){
 					$('#taxModalContent').text('Dorwał Cię ZUS, płacisz ' + pola[poleId].wartosc);
 					$('#taxModal').modal('show');
 					gracz.kasa -= pola[poleId].wartosc;
 				}
+				//pola bez akcji
 				else if (pole.typ === 'odwiedziny' || pole.typ === 'parking' || pole.typ ==='start') {
-					socket.emit('endMove',{});
+					socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 				}
+
+				//linie tramwajowe
 				else if (pole.typ === 'linia'){
 					if(pole.wlasciciel === undefined){
 						$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
@@ -219,7 +237,7 @@ $(function(){
 						$('#payModal').modal('show');
 					}
 				}
-
+				//wodociągi i elektrownia
 				else if(pole.typ ==='specjalne'){
 					if(pole.wlasciciel === undefined){
 						$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
@@ -228,7 +246,7 @@ $(function(){
 						$('#buyModal').modal('show');
 					}
 					else if(pola[12].wlasciciel === pole.wlasciciel && pola[28].wlasciciel !== pole.wlasciciel || pola[12].wlasciciel !== pole.wlasciciel && pola[28].wlasciciel === pole.wlasciciel){
-						naleznosc = 4*6;
+						naleznosc = 4*moveSize;
 						gracz.kasa -= naleznosc;
 						gracze[pola[poleId].wlasciciel].kasa += naleznosc;
 						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
@@ -236,7 +254,7 @@ $(function(){
 						$('#payModalCena').text('Należność: ' + naleznosc);
 						$('#payModal').modal('show');;
 					} else if(pola[12].wlasciciel === pole.wlasciciel && pola[28].wlasciciel === pole.wlasciciel){
-						naleznosc = 10*6;
+						naleznosc = 10*moveSize;
 						gracz.kasa -= naleznosc;
 						gracze[pola[poleId].wlasciciel].kasa += naleznosc;
 						$('#payModalLabel').text(gracz.nick + ' Płacisz graczowi ' + gracze[pole.wlasciciel].nick + ' za stanięcie na pole: '+ pole.nazwa);
@@ -250,12 +268,14 @@ $(function(){
 				else { 
 
 					var dzielnica = dzielnice[pole.dzielnica-1];
+					console.log('pole: ' + pole);
+					console.log('dzielnica: ' + dzielnica);
 						var ownsAll = true;
 						var oneOwner = true;
 						var owner = pola[dzielnica.lista[0]].wlasciciel;
 						var liczbaDomki = 0;
 						var liczbaHotele = 0;
-						var iloscPol = 0;
+						iloscPol = 0;
 						for(var i=0; i < dzielnica.lista.length; i++){
 							if(pola[dzielnica.lista[i]].wlasciciel !== owner){
 								oneOwner = false;
@@ -271,53 +291,43 @@ $(function(){
 						}
 							console.log('iloscPol: ' + iloscPol + ' ownsAll: ' + ownsAll + ' domki: ' + liczbaDomki + ' hotele: ' + liczbaHotele);
 
+					//akcja która wykona się gdy staniemy na pole niczyje
 					if(pole.wlasciciel === undefined){
 						$('#buyModalLabel').text(gracz.nick + ' Kup: ' + pole.nazwa);
 						$('#buyModalKasa').text('Stan konta: ' + gracz.kasa);
 						$('#buyModalCena').text('Cena: ' + pole.wartosc);
 						$('#buyModal').modal('show');
 					}
+					//akcja która wykona się gdy staniemy na swoje pole i posiadamy wszystkie pola z tej dzielnicy
 					else if(pole.wlasciciel === graczId && ownsAll && pole.typ === 'ulica'){
-						//todo modal do budowania
 						$('#propertyModalKasa').text(gracz.kasa);
 						$('#propertyModalCena').text('0');
 						$('#propertyModal').modal('show');
 
-						var ownedDzielnice =[];
-						var ownsDzielnica = true;
-
-						for(var j = 0; j < dzielnice.length; j++){
-							if(pola[dzielnice[j].lista[0]].wlasciciel === graczId){
-								for(var k=1; k < dzielnice[j].lista.length; k++){
-									if(pola[dzielnice[j].lista[k]].wlasciciel !== graczId){
-										ownsDzielnica = false;
-										break;
-									}
-								}
-								if(ownsDzielnica) { ownedDzielnice.push(dzielnice[j]); }
-							}
-						}
-						 console.log(ownedDzielnice);
-						 $('#propertyDzielnicaList').append('<option value="null">---</option>');
-						 $.each(ownedDzielnice, function(i, item) {
-						 	$('#propertyDzielnicaList').append('<option value="'+item.numer+'">'+item.nazwa+'</option>');
-						 });
+								dzielnicaId = dzielnica.numer -1;
+								cenaDomek = pola[dzielnica.lista[0]].domekCena;
+								cenaHotel = pola[dzielnica.lista[0]].hotelCena;
+								console.log(dzielnica);
+						
+						 console.log(dzielnica);
+						$('#propertyDzielnica').text(dzielnica.nazwa);
 
 					}
+					//wyliczenie opłat za pola z domkami lub hotelem
 					else if(pole.wlasciciel !== graczId){
 							naleznosc = (pole.wartosc/20);
 							if(oneOwner){ 
-								if(liczbaDomki === 0 && liczbaHotele === 0){
+								if(pole.domki === 0 && pole.hotel === 0){
 									naleznosc *= 2; 
-								} else if(liczbaDomki === 1 && liczbaHotele === 0) {
+								} else if(pole.domki === 1 && pole.hotel === 0) {
 									naleznosc *= 5;
-								} else if (liczbaDomki === 2 && liczbaHotele === 0) {
+								} else if (pole.domki === 2 && pole.hotel === 0) {
 									naleznosc *= 15;
-								} else if (liczbaDomki === 3 && liczbaHotele === 0) {
+								} else if (pole.domki === 3 && pole.hotel === 0) {
 									naleznosc *= 45;
-								} else if (liczbaDomki === 4 && liczbaHotele === 0) {
+								} else if (pole.domki === 4 && pole.hotel === 0) {
 									naleznosc *= 80;
-								} else if (liczbaDomki === 0 && liczbaHotele === 1) {
+								} else if (pole.domki === 0 && pole.hotel === 1) {
 									naleznosc *= 100;
 								}
 
@@ -335,38 +345,6 @@ $(function(){
 					}
 				}
 		};
-
-		$('#propertyDzielnicaList').change(function () {
-			iloscDomkow = 0;
-			iloscHoteli = 0;
-			var data = $(this).val();
-			if(data === 'null'){
-				cenaDomek = 0;
-				cenaHotel = 0;
-				//console.log(cenaDomek + " : " + cenaHotel);
-				$('#propertyDomkiIlosc').text(0);
-				$('#propertyHoteleIlosc').text(0);
-			}
-			else {
-				data = parseInt(data, 10) - 1;
-				cenaDomek = pola[dzielnice[data].lista[0]].domekCena;
-				cenaHotel = pola[dzielnice[data].lista[0]].hotelCena;
-				//console.log(cenaDomek + " : " + cenaHotel);
-				iloscPol = dzielnice[data].lista.length;
-				for(var k = 0; k < iloscPol; k++){
-					iloscDomkow += pola[dzielnice[data].lista[k]].domki;
-					iloscHoteli += pola[dzielnice[data].lista[k]].hotel;
-				}
-				$('#propertyDomki').attr('max', (iloscPol * 4) - iloscDomkow);
-				$('#propertyHotele').attr('max', (iloscPol) - iloscHoteli);
-
-				$('#propertyDomkiIlosc').text(iloscDomkow);
-				$('#propertyHoteleIlosc').text(iloscHoteli);				
-
-			}
-			$('#propertyDomki').change();
-			$('#propertyHotele').change();
-		});
 
 		$('#propertyDomki').change(function () {
 			var data = $(this).val();
@@ -398,16 +376,16 @@ $(function(){
 				$('#buyModal').modal('hide');
 				
 				console.log(gracz.nick + ' kasa po kupnie: ' + gracz.kasa);
-				socket.emit('endMove');
+				socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 			});
 
 		$('#payModalSaveBtn').click(function(){			
 			$('#payModal').modal('hide');
-			
+			var gracz = gracze[graczId];
 			console.log(gracz.nick + ' kasa po oddaniu zaplacie: ' + gracz.kasa);
 			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po odbiorze kasy: ' + gracze[pola[poleId].wlasciciel].kasa);
 
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		$('#chanceModalSaveBtn').click(function(){
@@ -417,7 +395,7 @@ $(function(){
 			$('#chanceModal').modal('hide');
 			
 			console.log(gracz.nick + ' kasa po "szansie": ' + gracz.kasa);
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		$('#riskModalSaveBtn').click(function(){
@@ -425,16 +403,17 @@ $(function(){
 			gracz.kasa += kartyRyzyka[ryzykoId].kwota;
 			$('#riskModal').modal('hide');
 			console.log(gracz.nick + ' kasa po "ryzyku": ' + gracz.kasa);
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 			console.log('wysłałem');
 		});
 
 		$('#taxModalSaveBtn').click(function(){
+			console.log(gracze);
 			var gracz = gracze[graczId];
 			$('#taxModal').modal('hide');
 			
 			console.log(gracz.nick + ' kasa po "podatku": ' + gracz.kasa);
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 			console.log('wysłałem');
 		});
 
@@ -452,45 +431,51 @@ $(function(){
 			}
 			else{
 				gracze[graczId].kasa -= selectedKoszt;
-				var dzielnia = parseInt($('#propertyDzielnicaList').val(), 10) - 1;
-				//console.log('d:' + dzielnia);
+				var dzielnia = dzielnice[dzielnicaId];
+				var iloscPol = dzielnia.lista.length;
+				console.log('d:');
+				console.log(dzielnia);
 				var npd = selectedIloscDomkow % iloscPol;
 				var pd = selectedIloscDomkow - npd;
 
-				//console.log('npd: ' + npd + ' pd: ' + pd);
+				console.log('npd: ' + npd + ' pd: ' + pd);
 
 				for(var i =0; i < iloscPol; i++){
-					pola[dzielnice[dzielnia].lista[i]].domki += pd / iloscPol;
-					if(i === iloscPol) { pola[dzielnice[dzielnia].lista[i]].domki += npd; }
+					console.log('poleNum: ' + dzielnia.lista[i]);
+					console.log(pola[dzielnia.lista[i]]);
+					pola[dzielnia.lista[i]].domki += pd / iloscPol;
+					if(i === iloscPol) { pola[dzielnia.lista[i]].domki += npd; }
 				}
 
 				var nph = selectedIloscHoteli % iloscPol;
 				var ph = selectedIloscHoteli - nph;
 
-				//console.log('nph: ' + nph + ' ph: ' + ph);
+				console.log('nph: ' + nph + ' ph: ' + ph);
 
 				for(var j =0; j < iloscPol; j++){
-					pola[dzielnice[dzielnia].lista[j]].hotel += ph;
-					if(i === iloscPol){ pola[dzielnice[dzielnia].lista[j]].hotel += nph; }
+					console.log('poleNum: ' + dzielnia.lista[j]);
+					console.log(pola[dzielnia.lista[j]]);
+					pola[dzielnia.lista[j]].hotel += ph;
+					if(i === iloscPol){ pola[dzielnia.lista[j]].hotel += nph; }
 				}
 
 				console.log(pola[1]);
 				console.log(pola[3]);
 
 				$('#propertyModal').modal('hide');
-				socket.emit('endMove',{});
+				socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 				console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po kupnie domku: ' + gracze[pola[poleId].wlasciciel].kasa);
 			}
 		});
 
 		$('#propertyModalCancelBtn').click(function(){
 			$('#propertyModal').modal('hide');
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		$('#buyModalCancelBtn').click(function(){
 			$('#buyModal').modal('hide');
-			socket.emit('endMove',{});
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		//losowanie ilości oczek jaką ma się przesunąć pionek

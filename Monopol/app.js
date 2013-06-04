@@ -41,6 +41,7 @@ var getGracz = function (number){
 
 socket.on('connection', function (client) {
     'use strict';
+
     if(iloscGraczy < 6){
         var gracz = data.addGracz('Gracz '+(iloscGraczy+1), 'red');
         gracze[iloscGraczy] = { 'number': gracz, 'socket': client };
@@ -65,29 +66,33 @@ socket.on('connection', function (client) {
         console.log(gracze);
     });
 
+    client.on('moveOtherPionek', function (data){
+        client.broadcast.emit('makeOtherMove', { 'moveSize': data.moveSize, 'graczId': data.graczId, 'gracze': data.gracze, 'pola': data.pola});
+    });
+
     client.on('startGame', function(){
         console.log('dostałem');
         var g = getGracz(kolejka%iloscGraczy);
         kolejka++;
         console.log('g: ' + g);
         if(g !== undefined){
-            gracze[g].socket.emit('makeMove', { 'moveSize': 4, 'graczId': gracze[g].number});
-            gracze[g].socket.broadcast.emit('makeOtherMove', { 'moveSize': 4, 'graczId': gracze[g].number});
+            var item = data.getAllData();
+            gracze[g].socket.emit('makeMove', { 'moveSize': 1, 'graczId': gracze[g].number, 'gracze': item.gracze, 'pola': item.pola});
+            gracze[g].socket.broadcast.emit('makeOtherMove', { 'moveSize': 1, 'graczId': gracze[g].number, 'gracze': item.gracze, 'pola': item.pola});
             console.log('wysłałem');
         }
     });
-    client.on('endMove', function(){
+    client.on('endMove', function (item){
         console.log('dostałem');
+        data.setData(item);
+        console.log('ustawiłem')
         var g = getGracz(kolejka%iloscGraczy);
         kolejka++;
         console.log('g: ' + g);
         if(g !== undefined){
-            gracze[g].socket.emit('makeMove', { 'moveSize': 4, 'graczId': gracze[g].number});
-            gracze[g].socket.broadcast.emit('makeOtherMove', { 'moveSize': 4, 'graczId': gracze[g].number});
+            gracze[g].socket.emit('makeMove', { 'moveSize': 1, 'graczId': gracze[g].number, 'gracze': item.gracze, 'pola': item.pola});
+            gracze[g].socket.broadcast.emit('makeOtherMove', { 'moveSize': 1, 'graczId': gracze[g].number, 'gracze': item.gracze, 'pola': item.pola});
             console.log('wysłałem');
         }
     });
 });
-
-
-
