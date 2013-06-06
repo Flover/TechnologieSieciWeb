@@ -249,21 +249,30 @@ $(function(){
 				//ryzyko
 				else if(pole.typ === 'ryzyko'){
 					ryzykoId = getNextRyzyko();
-					if(kartyRyzyka[ryzykoId].ruch){
-						moveOtherPionek(kartyRyzyka[ryzykoId].ruch, graczId);
-					}else{
-						if(kartyRyzyka[ryzykoId].pole){
+					if(kartyRyzyka[ryzykoId].ruch !== undefined){
+						console.log('ryzyko ruch: ' + kartyRyzyka[ryzykoId].ruch);
+						moveOtherPionek(kartyRyzyka[ryzykoId].ruch, graczId, gracze[graczId].pionek);
+						socket.emit('moveOtherPionek', {'moveSize': {'1': kartyRyzyka[ryzykoId].ruch, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+					}
+					else{
+						if(kartyRyzyka[ryzykoId].pole !== undefined){
 							if(poleId < kartyRyzyka[ryzykoId].pole){
 								var moveSizeNormal = kartyRyzyka[ryzykoId].pole - poleId;
-								moveOtherPionek(moveSizeNormal, graczId);
+								console.log('ryzyko pole: ' + kartyRyzyka[ryzykoId].pole + ' ' +
+									moveSizeNormal);
+								moveOtherPionek(moveSizeNormal, graczId, gracze[graczId].pionek);
+								socket.emit('moveOtherPionek', {'moveSize': {'1': moveSizeNormal, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
 							}else{
-								var moveSizeHardcore = (39 - poleId) + kartyRyzyka[ryzykoId].pole;
-								moveOtherPionek(moveSizeHardcore, graczId);
+								var moveSizeHardcore = (40 - poleId) + kartyRyzyka[ryzykoId].pole;
+								console.log('ryzyko pole: ' + kartyRyzyka[ryzykoId].pole + ' ' +
+									moveSizeHardcore);
+								moveOtherPionek(moveSizeHardcore, graczId, gracze[graczId].pionek);
+								socket.emit('moveOtherPionek', {'moveSize': {'1': moveSizeHardcore, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
 							}
 						}
 					}
 
-
+					console.log('Numer karty to: ' + ryzykoId);
 					$('#riskModalContent').text(kartyRyzyka[ryzykoId].tresc);
 					$('#riskModal').modal('show');
 				}
