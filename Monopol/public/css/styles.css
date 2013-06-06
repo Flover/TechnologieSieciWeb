@@ -54,11 +54,74 @@ div.cellName {
 	font-style: italic;
 }
 
-div.pionek {
-	width: 15px;
-	height: 30px;
-	background: red;
+div.pionek0 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player1.png');
 	margin: 5px;
 	display: block;
 	float: left;
+}
+
+div.pionek1 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player2.png');
+	margin: 5px;
+	display: block;
+	float: left;
+}
+
+div.pionek2 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player3.png');
+	margin: 5px;
+	display: block;
+	float: left;
+}
+
+div.pionek3 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player4.png');
+	margin: 5px;
+	display: block;
+	float: left;
+}
+
+div.pionek4 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player4.png');
+	margin: 5px;
+	display: block;
+	float: left;
+}
+
+div.pionek5 {
+	width: 20px;
+	height: 20px;
+	background: url('../images/player5.png');
+	margin: 5px;
+	display: block;
+	float: left;
+}
+
+div.domek {
+	width: 28px;
+	height: 28px;
+	display: inline-block;
+	background: url('../images/domek.png');
+	float: left;
+	margin: 1px;
+}
+
+div.hotel {
+	width: 60px;
+	height: 28px;
+	display: inline-block;
+	background: url('../images/hotel.png');
+	float: left;
+	margin: 1px;
 }

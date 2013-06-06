@@ -133,6 +133,60 @@
 		  </div>
 		</div>
 
+		<div  id="prisonModal" class="modal hide fade" data-keyboard="false" data-backdrop="static">
+		  <div class="modal-header">
+		    <h3 id="prisonModalLabel" >Więzienie</h3>
+		  </div>
+		  <div class="modal-body" id="prisonModalBody">
+		    <p id="prisonModalContent"></p>
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-primary" id="prisonModalSaveBtn" >OK</a>
+		  </div>
+		</div>
+
+		<div  id="moveModal" class="modal hide fade" data-keyboard="false" data-backdrop="static">
+		  <div class="modal-header">
+		    <h3 id="moveModalLabel" >Twój ruch</h3>
+		  </div>
+		  <div class="modal-body" id="moveModalBody">
+		    <button class="btn btn-primary" id="moveModalDrawBtn">Rzuć kostką</button>
+		    <div id="moveModalCountPanel">
+		    	<h3>Suma oczek: <b id="moveModalCount"></b></h3>
+		    	<img alt="suma oczek" id="moveModalCountImg"/>
+		    </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn btn-primary" id="moveModalSaveBtn" >Rusz pionkiem</a>
+		  </div>
+		</div>
+
+		<div  id="loseModal" class="modal hide fade" data-keyboard="false" data-backdrop="static">
+		  <div class="modal-header">
+		    <h3>Przegrałeś</h3>
+		  </div>
+		  <div class="modal-body">
+		    <h3>Zabrakło Ci pieniędzy. Zbankrutowałeś.</h3>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Zamknij</button>
+		  </div>
+		</div>
+
+		<div  id="startModal" class="modal hide fade" data-keyboard="false" data-backdrop="static">
+		  <div class="modal-header">
+		    <h3>Czy chcesz rozpocząć grę?</h3>
+		  </div>
+		  <div class="modal-body">
+		    <div class="btn-group" id="startModalBody">
+		    	<button class="btn btn-success" id="yesStartModalBtn"> tak </button>
+		    	<button class="btn btn-danger" id="noStartModalBtn"> nie </button>
+		    </div>
+		  </div>
+		  <div class="modal-footer">
+		  </div>
+		</div>
+
 		<script src="js/jquery-1.9.1.js"></script>
 			<script src="js/bootstrap.js"></script>
 			<script src="js/bootstrap-modal.js"></script>

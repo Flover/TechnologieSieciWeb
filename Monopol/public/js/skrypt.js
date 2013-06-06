@@ -4,22 +4,39 @@ $(function(){
 	console.log('connecting…');
 
 	var dzielnice = [];
-	var dzielnicaId = 0;
-	var gracze = [];
-	var pola = [];
-	var kartySzansy = [];
-	var kartyRyzyka = [];
-	var szansaId = 0;
-	var ryzykoId = 0;
-	var graczId = 0;
-	var poleId = 0;
-	var naleznosc = 0;
-	var cenaDomek = 0;
-	var cenaHotel = 0;
-	var iloscDomkow = 0;
-	var iloscHoteli = 0;
-	var iloscPol = 0;
+		var dzielnicaId = 0;
+		var gracze = [];
+		var pola = [];
+		var kartySzansy = [];
+		var kartyRyzyka = [];
+		var szansaId = 0;
+		var ryzykoId = 0;
+		var graczId = 0;
+		var poleId = 0;
+		var naleznosc = 0;
+		var cenaDomek = 0;
+		var cenaHotel = 0;
+		var iloscDomkow = 0;
+		var iloscHoteli = 0;
+		var iloscPol = 0;
+		var moveSize = 0;
 
+	var buildProperty = function (data){
+		for(var i =0; i < data.length; i++){
+			if(data[i].domki && data[i].domki > 0){
+				var cell = '#cell_' + trasa[i];
+				if(data[i].domki === 4 && data[i].hotel === 1){
+					$(cell + ' .cellBuildings').children().remove();
+					$(cell + ' .cellBuildings').append('<div class="hotel"></div>');
+				}else{
+					$(cell + ' .cellBuildings').children().remove();
+					for(var j =0 ; j < data[i].domki; j++){
+						$(cell + ' .cellBuildings').append('<div class="domek"></div>');
+					}
+				}
+			}
+		}
+	};
 
 	socket.on('connect', function () {
 		console.log('Połączony!');
@@ -27,21 +44,21 @@ $(function(){
 
 	socket.on('hello', function (data){
 		if(data){
-			// console.log(data['data']);
 			dzielnice = data['data'].dzielnice;
 			gracze = data['data'].gracze; 
 			pola = data['data'].pola;
 			kartyRyzyka = data['data'].ryzyka;
 			kartySzansy = data['data'].szansy;
-			// console.log(data);
-			// console.log(gracze[data.graczId]);
+
+			//build
+			buildProperty(pola);
 
 			$('.cellFigures').children().remove();
-			$.each(gracze, function (i, item){
-				if(item){
-					$('#cell_0101 .cellFigures').append(pionek(i));
+			for(var i=0; i < gracze.length; i++){
+				if(gracze[i] !== null && gracze[i] !== undefined){
+					$('#cell_0101 .cellFigures').append(pionek(i, gracze[i].pionek));
 				}
-			});
+			}
 		}
 		else{
 			alert('przy stole nie ma miejsc, spadaj.');
@@ -49,30 +66,74 @@ $(function(){
 	});
 
 	socket.on('newGracz', function (data){
-		// console.log(data['data']);
 		gracze = data['data'].gracze; console.log(data['data'].gracze);
 		pola = data['data'].pola;
-		// console.log(data);
-		// console.log(pola);
-		// console.log(gracze);
-		$('#cell_0101 .cellFigures').append(pionek(data.graczId));
-		// console.log('wysyłam');
-		socket.emit('startGame', {});
-		// console.log('wysłałem');
+		$('#cell_0101 .cellFigures').append(pionek(data.graczId, data.pionek));
+	});
+
+	socket.on('tryStart', function(){
+		$('#startModalBody').css({'text-align': 'center'});
+		$('#startModal').modal('show');
+	});
+
+	$('#yesStartModalBtn').click(function(){
+		socket.emit('startGame', 1);
+		$('#startModal').modal('hide');
+	});
+
+	$('#noStartModalBtn').click(function(){
+		socket.emit('startGame', 0);
+		$('#startModal').modal('hide');
+	});
+
+	socket.on('rmGracz', function (data){
+		$('#pionek'+data).remove();
+	})
+
+	socket.on('loser', function(){
+		$('#loseModal').modal('show');
 	});
 
 	socket.on('makeMove', function (data){
 		graczId = data.graczId;
 		gracze = data.gracze;
-		pola = data.pola;	console.log(data.pola);
-		movePionek(data.moveSize, graczId);		
+		pola = data.pola;	
+
+		//build
+		buildProperty(pola);
+
+		moveSize =data.moveSize['1']+data.moveSize['2'];
+		$('#moveModalDrawBtn').show();
+		$('#moveModalBody').css({'text-align': 'center'});
+		$('#moveModalCount').text(moveSize);
+		$('#moveModalCountImg').attr('src', 'images/'+data.moveSize['1']+data.moveSize['2']+'.png');
+
+		$('#moveModalCountPanel').hide();
+		$('#moveModalSaveBtn').hide();
+		$('#moveModal').modal('show');		
+	});
+
+	$('#moveModalDrawBtn').click(function(){
+		$('#moveModalDrawBtn').hide();
+		$('#moveModalCountPanel').show();
+		$('#moveModalSaveBtn').show();
+
+	});
+
+	$('#moveModalSaveBtn').click(function(){
+		$('#moveModal').modal('hide');
+		movePionek(moveSize, graczId, gracze[graczId].pionek);
 	});
 
 	socket.on('makeOtherMove', function (data){
 
 		gracze = data.gracze;
-		pola = data.pola;	console.log(data.pola);
-		moveOtherPionek(data.moveSize, data.graczId);
+		pola = data.pola;
+
+		//build
+		buildProperty(pola);
+
+		moveOtherPionek(data.moveSize['1']+data.moveSize['2'], data.graczId, gracze[data.graczId].pionek);
 		});
 
 		
@@ -80,11 +141,8 @@ $(function(){
 			'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
 			'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
-		var pionek = function (id) { return '<div class="pionek" id="pionek'+id+'"></div>'; };
+		var pionek = function (id, typ) { return '<div class="pionek'+typ+'" id="pionek'+id+'"></div>'; };
 
-		// $('#cell_0101 .cellFigures').append(pionek(0));
-		// $('#cell_0101 .cellFigures').append(pionek(1));
-		// $('#cell_0101 .cellFigures').append(pionek(2));
 
 		var getNextRyzyko = function getRandomInt () {
 			var min = 0;
@@ -98,7 +156,7 @@ $(function(){
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		};
 
-		var moveOtherPionek = function (moveSize, graczId){
+		var moveOtherPionek = function (moveSize, graczId, graczPionek){
 			var cell = $('#pionek'+graczId).parent().parent().attr('id').substring(5,9);
 			console.log('cell: ' + cell);
 			var pionekPozycja = 0;
@@ -112,10 +170,12 @@ $(function(){
 				console.log(trasa[pionekPozycja]);
 			$('#cell_'+ trasa[pionekPozycja] +' .cellFigures').children().filter('#pionek'+graczId).remove();
 				console.log(trasa[((pionekPozycja+moveSize)%40)]);
-			$('#cell_'+ trasa[((pionekPozycja+moveSize)%40)] +' .cellFigures').append(pionek(graczId));
+				var poleId = ((pionekPozycja+moveSize)%40);
+				if(poleId < 0){ poleId = 40 + poleId; }
+			$('#cell_'+ trasa[poleId] +' .cellFigures').append(pionek(graczId, graczPionek));
 		}
 
-		var movePionek = function (moveSize, graczId){
+		var movePionek = function (moveSize, graczId, graczPionek){
 			var gracz = gracze[graczId];
 			var cell = $('#pionek'+graczId).parent().parent().attr('id').substring(5,9);
 			console.log('cell: ' + cell);
@@ -130,9 +190,10 @@ $(function(){
 				console.log(trasa[pionekPozycja]);
 			$('#cell_'+ trasa[pionekPozycja] +' .cellFigures').children().filter('#pionek'+graczId).remove();
 				console.log(trasa[((pionekPozycja+moveSize)%40)]);
-			$('#cell_'+ trasa[((pionekPozycja+moveSize)%40)] +' .cellFigures').append(pionek(graczId));
+			$('#cell_'+ trasa[((pionekPozycja+moveSize)%40)] +' .cellFigures').append(pionek(graczId, graczPionek));
 
 			poleId = ((pionekPozycja+moveSize)%40);
+			if(poleId < 0){ poleId = 40 + poleId; }
 			var pole = pola[((pionekPozycja+moveSize)%40)];
 				console.log(pole);
 
@@ -148,6 +209,29 @@ $(function(){
 				//szansa
 				if(pole.typ === 'szansa'){
 					szansaId = getNextSzansa();
+					if(kartySzansy[szansaId].ruch !== undefined){
+						console.log('szansa ruch: ' + kartySzansy[szansaId].ruch);
+						moveOtherPionek(kartySzansy[szansaId].ruch, graczId, gracze[graczId].pionek);
+						socket.emit('moveOtherPionek', {'moveSize': {'1': kartySzansy[szansaId].ruch, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+					}
+					else{
+						if(kartySzansy[szansaId].pole !== undefined){
+							if(poleId < kartySzansy[szansaId].pole){
+								var moveSizeNormal = kartySzansy[szansaId].pole - poleId;
+								console.log('szansa pole: ' + kartySzansy[szansaId].pole + ' ' +
+									moveSizeNormal);
+								moveOtherPionek(moveSizeNormal, graczId, gracze[graczId].pionek);
+								socket.emit('moveOtherPionek', {'moveSize': {'1': moveSizeNormal, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+							}else{
+								var moveSizeHardcore = (40 - poleId) + kartySzansy[szansaId].pole;
+								console.log('szansa pole: ' + kartySzansy[szansaId].pole + ' ' +
+									moveSizeHardcore);
+								moveOtherPionek(moveSizeHardcore, graczId, gracze[graczId].pionek);
+								socket.emit('moveOtherPionek', {'moveSize': {'1': moveSizeHardcore, '2': 0}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+							}
+						}
+					}
+
 					console.log('Numer karty to: ' + szansaId);
 					$('#chanceModalContent').text(kartySzansy[szansaId].tresc);
 					$('#chanceModal').modal('show');
@@ -158,11 +242,28 @@ $(function(){
 					//socket.emit('moveOtherPionek', {'moveSize': -20, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
 					//!!!!!!!!!!!!!todo sanki puchałke dostał
 					//movePionek(-20, graczId);
-					socket.emit('endMove',{'gracze': gracze, 'pola': pola});
+					$('#prisonModalContent').text('Idziesz do więzienia, nie przechodzisz przez start, nie otrzymujesz premii za przejście prez start.');
+					$('#prisonModal').modal('show');
+
 				}
 				//ryzyko
 				else if(pole.typ === 'ryzyko'){
 					ryzykoId = getNextRyzyko();
+					if(kartyRyzyka[ryzykoId].ruch){
+						moveOtherPionek(kartyRyzyka[ryzykoId].ruch, graczId);
+					}else{
+						if(kartyRyzyka[ryzykoId].pole){
+							if(poleId < kartyRyzyka[ryzykoId].pole){
+								var moveSizeNormal = kartyRyzyka[ryzykoId].pole - poleId;
+								moveOtherPionek(moveSizeNormal, graczId);
+							}else{
+								var moveSizeHardcore = (39 - poleId) + kartyRyzyka[ryzykoId].pole;
+								moveOtherPionek(moveSizeHardcore, graczId);
+							}
+						}
+					}
+
+
 					$('#riskModalContent').text(kartyRyzyka[ryzykoId].tresc);
 					$('#riskModal').modal('show');
 				}
@@ -302,7 +403,9 @@ $(function(){
 					else if(pole.wlasciciel === graczId && ownsAll && pole.typ === 'ulica'){
 						$('#propertyModalKasa').text(gracz.kasa);
 						$('#propertyModalCena').text('0');
-						$('#propertyModal').modal('show');
+						$('#propertyDomki').attr('max', (iloscPol * 4) - liczbaDomki);
+						$('#propertyHotele').attr('max', iloscPol - liczbaHotele);
+
 
 								dzielnicaId = dzielnica.numer -1;
 								cenaDomek = pola[dzielnica.lista[0]].domekCena;
@@ -311,7 +414,7 @@ $(function(){
 						
 						 console.log(dzielnica);
 						$('#propertyDzielnica').text(dzielnica.nazwa);
-
+						$('#propertyModal').modal('show');
 					}
 					//wyliczenie opłat za pola z domkami lub hotelem
 					else if(pole.wlasciciel !== graczId){
@@ -348,19 +451,13 @@ $(function(){
 
 		$('#propertyDomki').change(function () {
 			var data = $(this).val();
-
-			//console.log(data * cenaDomek);
-
 			$('#propertyDomkiKoszt').text(data * cenaDomek);
 			var koszt = parseInt($('#propertyDomkiKoszt').text() ,10) + parseInt($('#propertyHoteleKoszt').text(), 10) ;
 			$('#propertyModalCena').text(koszt);
-
 		});
 
 		$('#propertyHotele').change(function () {
 			var data = $(this).val();
-
-			//console.log(data * cenaHotel);
 
 			$('#propertyHoteleKoszt').text(data * cenaHotel);
 			var koszt = parseInt($('#propertyDomkiKoszt').text() ,10) + parseInt($('#propertyHoteleKoszt').text(), 10) ;
@@ -375,26 +472,26 @@ $(function(){
 			gracz.kasa -= pola[poleId].wartosc;
 				$('#buyModal').modal('hide');
 				
-				console.log(gracz.nick + ' kasa po kupnie: ' + gracz.kasa);
+				// console.log(gracz.nick + ' kasa po kupnie: ' + gracz.kasa);
 				socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 			});
 
-		$('#payModalSaveBtn').click(function(){			
+		$('#payModalSaveBtn').click(function(){
 			$('#payModal').modal('hide');
 			var gracz = gracze[graczId];
-			console.log(gracz.nick + ' kasa po oddaniu zaplacie: ' + gracz.kasa);
-			console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po odbiorze kasy: ' + gracze[pola[poleId].wlasciciel].kasa);
+			// console.log(gracz.nick + ' kasa po oddaniu zaplacie: ' + gracz.kasa);
+			// console.log(gracze[pola[poleId].wlasciciel].nick + ' kasa po odbiorze kasy: ' + gracze[pola[poleId].wlasciciel].kasa);
 
 			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		$('#chanceModalSaveBtn').click(function(){
 			var gracz = gracze[graczId];
-			console.log(gracz.nick + ' kasa przed "szansą": ' + gracz.kasa);
+			// console.log(gracz.nick + ' kasa przed "szansą": ' + gracz.kasa);
 			gracz.kasa += kartySzansy[szansaId].kwota;
 			$('#chanceModal').modal('hide');
 			
-			console.log(gracz.nick + ' kasa po "szansie": ' + gracz.kasa);
+			// console.log(gracz.nick + ' kasa po "szansie": ' + gracz.kasa);
 			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
@@ -402,19 +499,26 @@ $(function(){
 			var gracz = gracze[graczId];
 			gracz.kasa += kartyRyzyka[ryzykoId].kwota;
 			$('#riskModal').modal('hide');
-			console.log(gracz.nick + ' kasa po "ryzyku": ' + gracz.kasa);
+			// console.log(gracz.nick + ' kasa po "ryzyku": ' + gracz.kasa);
 			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
-			console.log('wysłałem');
+			// console.log('wysłałem');
 		});
 
 		$('#taxModalSaveBtn').click(function(){
-			console.log(gracze);
-			var gracz = gracze[graczId];
+			//console.log(gracze);
+			//var gracz = gracze[graczId];
 			$('#taxModal').modal('hide');
 			
-			console.log(gracz.nick + ' kasa po "podatku": ' + gracz.kasa);
+			//console.log(gracz.nick + ' kasa po "podatku": ' + gracz.kasa);
 			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
-			console.log('wysłałem');
+			//console.log('wysłałem');
+		});
+
+		$('#prisonModalSaveBtn').click(function(){
+			$('#prisonModal').modal('hide');
+			socket.emit('moveOtherPionek', {'moveSize': {'1': -10, '2': -10}, 'graczId': graczId, 'pola': pola, 'gracze': gracze});
+			moveOtherPionek(-20, graczId, gracze[graczId].pionek);
+			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
 
 		$('#propertyModalSaveBtn').click(function(){
@@ -477,15 +581,4 @@ $(function(){
 			$('#buyModal').modal('hide');
 			socket.emit('endMove',{'gracze': gracze, 'pola': pola});
 		});
-
-		//losowanie ilości oczek jaką ma się przesunąć pionek
-		var kostka = function getRandomInt () {
-			var min = 1;
-			var max = 6;
-			return { '1': Math.floor(Math.random() * (max - min + 1)) + min, '2': Math.floor(Math.random() * (max - min + 1)) + min };
-		};
-
-		//console.log(kostka());
-
-		
 });

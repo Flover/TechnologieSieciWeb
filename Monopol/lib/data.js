@@ -7,17 +7,21 @@ module.exports = function (){
 		return this;
 	};
 
-	var KartaSzansy = function (numer, tresc, kwota) {
+	var KartaSzansy = function (numer, tresc, kwota, ruch, pole) {
 		this.numer = numer;
 		this.tresc = tresc;
 		this.kwota = kwota;
+		this.ruch = ruch;
+		this.pole = pole;
 		return this;
 	}
 
-	var KartaRyzyka = function (numer, tresc, kwota) {
+	var KartaRyzyka = function (numer, tresc, kwota, ruch, pole) {
 		this.numer = numer;
 		this.tresc = tresc;
 		this.kwota = kwota;
+		this.ruch = ruch;
+		this.pole = pole;
 		return this;
 	}
 
@@ -52,21 +56,34 @@ module.exports = function (){
 		'0205', '0204', '0203', '0202', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309', '0310', '0410', '0409', '0408', '0407', 
 		'0406', '0405', '0404', '0403', '0402', '0401', '0301', '0201'];
 
-	var pola = [ new Pole('Start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 50, 0, 250, 1), new Pole('szansa'), 
-		new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 50, 0, 250, 1), new Pole('podatek', 200),
-		new Pole('linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 50, 0, 250, 2),
-		new Pole('ryzyko'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 50, 0, 250, 2), new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 50, 0, 250, 2),
-		new Pole('odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 100, 0, 500, 3), new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
-		new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 100, 0, 500, 3), new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 100, 0, 500, 3),
-		new Pole('linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 100, 0, 500, 4), new Pole('szansa'),
-		new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 100, 0, 500, 4), new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 100, 0, 500, 4), new Pole('parking'),
-		new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 150, 0, 750, 5), new Pole('ryzyko'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 150, 0, 750, 5),
-		new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 150, 0, 750, 5), new Pole('linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
-		new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 150, 0, 750, 6), new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 150, 0, 750, 6),
-		new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 150, 0, 750, 6),
-		new Pole('IdźDoWięzienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 200, 0, 1000, 7), new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 200, 0, 1000, 7),
-		new Pole('szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 200, 0, 1000, 7), new Pole('linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
-		new Pole('ryzyko'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 200, 0, 1000, 8), new Pole('podatek', 100), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 200, 0, 1000, 8) ]; //TO-DO!
+	var pola = [ new Pole('start', 200) , new Pole('ulica', 60, 'purple', 'PCK', undefined, 0, 50, 0, 250, 1), 
+		new Pole('szansa'), new Pole('ulica', 60, 'purple', 'Gałczyńskiego', undefined, 0, 50, 0, 250, 1), 
+		new Pole('podatek', 200), new Pole('linia', 200, 'white', 'Strzyża', undefined, 0, 0, 0, 0 ,9), 
+		new Pole('ulica', 100, 'aqua', 'Wyzwolenia', undefined, 0, 50, 0, 250, 2),
+		new Pole('ryzyko'), new Pole('ulica', 100, 'aqua', 'Wolności', undefined, 0, 50, 0, 250, 2), 
+		new Pole('ulica', 100, 'aqua', 'Oliwska', undefined, 0, 50, 0, 250, 2),
+		new Pole('odwiedziny'), new Pole('ulica', 140, 'magenta', 'Jana Pawła 2', undefined, 0, 100, 0, 500, 3), 
+		new Pole('specjalne', 150, 'white', 'Elektrownia', undefined, 0, 0, 0, 0, 10),
+		new Pole('ulica', 140, 'magenta', 'Pilotów', undefined, 0, 100, 0, 500, 3), 
+		new Pole('ulica', 160, 'magenta', 'Rzeczypospolitej', undefined, 0, 100, 0, 500, 3),
+		new Pole('linia', 200, 'white', 'Oliwa', undefined, 0, 0, 0, 0 ,9), 
+		new Pole('ulica', 180, 'orange', 'Obrońców Wybrzeża', undefined, 0, 100, 0, 500, 4), new Pole('szansa'),
+		new Pole('ulica', 180, 'orange', 'Chłopska', undefined, 0, 100, 0, 500, 4), 
+		new Pole('ulica', 200, 'orange', 'Piastowska', undefined, 0, 100, 0, 500, 4), new Pole('parking'),
+		new Pole('ulica', 220, 'red', 'Gospody', undefined, 0, 150, 0, 750, 5), 
+		new Pole('ryzyko'), new Pole('ulica', 220, 'red', 'Subisława', undefined, 0, 150, 0, 750, 5),
+		new Pole('ulica', 240, 'red', 'Pomorska', undefined, 0, 150, 0, 750, 5), 
+		new Pole('linia', 200, 'white', 'Witosa', undefined, 0, 0, 0, 0 ,9), 
+		new Pole('ulica', 260, 'yellow', 'Wita Stwosza', undefined, 0, 150, 0, 750, 6), 
+		new Pole('ulica', 260, 'yellow', 'Polanki', undefined, 0, 150, 0, 750, 6),
+		new Pole('specjalne', 150, 'white', 'Wodociągi', undefined, 0, 0, 0, 0, 10), 
+		new Pole('ulica', 280, 'yellow', 'Spacerowa', undefined, 0, 150, 0, 750, 6),
+		new Pole('IdzDoWiezienia'), new Pole('ulica', 300, 'green', 'Jaśkowa Dolina', undefined, 0, 200, 0, 1000, 7), 
+		new Pole('ulica', 300, 'green', 'Kościuszki', undefined, 0, 200, 0, 1000, 7),
+		new Pole('szansa'), new Pole('ulica', 320, 'green', 'Grunwaldzka', undefined, 0, 200, 0, 1000, 7), 
+		new Pole('linia', 200, 'white', 'Brzeźno', undefined, 0, 0, 0, 0 ,9),
+		new Pole('ryzyko'), new Pole('ulica', 350, 'blue', 'Długa', undefined, 0, 200, 0, 1000, 8), 
+		new Pole('podatek', 100), new Pole('ulica', 400, 'blue', 'Długi Targ', undefined, 0, 200, 0, 1000, 8) ];
 
 	dzielnice[0].lista.push(1);
 		dzielnice[0].lista.push(3);
@@ -97,32 +114,33 @@ module.exports = function (){
 		dzielnice[9].lista.push(12);
 		dzielnice[9].lista.push(28);
 
-	var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 0), 
-		new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 0),
+
+	var kartySzansy = [ new KartaSzansy(0, 'Idż na ulice Jana Pawła II jeśli przejdziesz przez START pobierz 200', 0, undefined, 11), 
+		new KartaSzansy(1, 'Idź na Strzyża. Jeśli przejdziesz przez START pobierz 200', 0, undefined, 5),
 		new KartaSzansy(2, 'Zrobiłeś błąd w kalkulacjach podatkowych. Zapłać 200.', -200), 
-		new KartaSzansy(3, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0),
-		new KartaSzansy(4, 'Idź do Elektrowni.Jeśli nie jest zajęta możesz ją kupić od banku. Jeśli jest już zajęta rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
+		new KartaSzansy(3, 'Idź na Oliwa.', 0, undefined, 15 ),
+		new KartaSzansy(4, 'Idź do Elektrowni.', 0, undefined, 12), 
 		new KartaSzansy(5, 'Otrzymujesz 30 za porady finansowe', 30), 
-		new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
-		new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 0),
+		new KartaSzansy(6, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0, undefined, 30), 
+		new KartaSzansy(7, 'Idź na Pomorska. Jeśli przejdziesz przez START pobierz 200', 0, undefined, 24),
 		new KartaSzansy(8, 'Bank wypłaca Ci dywidendę. Pobierz 50', 50), 
 		new KartaSzansy(9, 'Zwrot podatku.Pobierz 150', 150),
-		new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 0), 
+		new KartaSzansy(10, 'Przejdź na START. (Pobierz 200)', 0, undefined, 0), 
 		new KartaSzansy(11, 'Zapłać grzywne 20', -20), 
-		new KartaSzansy(12, 'Cofnij się o trzy pola.', 0), 
-		new KartaSzansy(13, 'Idź na Długi Targ', 0) ];
+		new KartaSzansy(12, 'Cofnij się o trzy pola.', 0, -3), 
+		new KartaSzansy(13, 'Idź na Długi Targ', 0, undefined, 39) ];
 
-	var kartyRyzyka = [ new KartaRyzyka(0, 'Idź na najbliższy Dworzec kolejowy. Jeśli nie jest zajęty możesz go kupić od banku. Jeśli jest już zajęty rzuć kostką jeszcze raz i zapłać właścicielowi odpowiednią sumę.', 0), 
+	var kartyRyzyka = [ new KartaRyzyka(0, 'Idź na Brzeźno.', 0, undefined, 35), 
 		new KartaRyzyka(1, 'Odziedziczyłeś spadek. Pobierz 100', 100),
 		new KartaRyzyka(2, 'Zająłeś 2 miejsce w konkursie piękności. Pobierz 10', 10), 
 		new KartaRyzyka(3, 'Błąd bankowy na twoim koncie! Pobierz 200', 200),
-		new KartaRyzyka(4, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0), 
+		new KartaRyzyka(4, 'Idź do więzienia. Nie przechodź przez START. Nie pobieraj 200', 0, undefined, 30), 
 		new KartaRyzyka(5, 'Dostałeś premię! Pobierz 100', 100),
 		new KartaRyzyka(6, 'Masz urodziny! Pobierz 100.', 100), 
 		new KartaRyzyka(7, 'Fundusz Zdrowotny. Pobierz 100', 100),
 		new KartaRyzyka(8, 'Zapłać za wizytę u dentysty 100', -100), 
 		new KartaRyzyka(9, 'Zapłać czesne 50', -50),
-		new KartaRyzyka(10, 'Przejdź na START (Pobierz 200)', 0), 
+		new KartaRyzyka(10, 'Przejdź na START (Pobierz 200)', 0, undefined, 0), 
 		new KartaRyzyka(11, 'Wyprzedaż! Pobierz 50', 50),
 		new KartaRyzyka(12, 'Zapłać za wizytę Lekarską 50', 50), 
 		new KartaRyzyka(13, 'Zwrot podatku. Pobierz 20', 20) ];
@@ -136,8 +154,23 @@ module.exports = function (){
 			return (gracze.length -1);
 		},
 		rmGracz: function (data){
-					gracze[data] = undefined;
-					return;
+
+			for(var i=0; i < gracze[data].ulice.length; i++){
+				pola[gracze[data].ulice[i]].hotel = 0;
+				pola[gracze[data].ulice[i]].domki = 0;
+				pola[gracze[data].ulice[i]].wlasciciel = undefined;
 			}
-		};
+			gracze[data] = undefined;
+			return;
+		},
+		setData: function (data){
+			gracze = data.gracze;
+			pola = data.pola;
+		},
+		getRandomInts: function () {
+			var min = 1;
+			var max = 6;
+			return { '1': Math.floor(Math.random() * (max - min + 1)) + min, '2': Math.floor(Math.random() * (max - min + 1)) + min };
+		}
 	};
+};
